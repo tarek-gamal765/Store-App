@@ -122,7 +122,7 @@ Widget backLayerWidget({
                 onPressed: () {
                   navigateTo(
                     context: context,
-                    widget: const FeedsScreen(),
+                    widget:  FeedsScreen(),
                   );
                 },
               ),
@@ -133,7 +133,7 @@ Widget backLayerWidget({
                 onPressed: () {
                   navigateTo(
                     context: context,
-                    widget: const FeedsScreen(),
+                    widget:  FeedsScreen(),
                   );
                 },
               ),
@@ -144,7 +144,7 @@ Widget backLayerWidget({
                 onPressed: () {
                   navigateTo(
                     context: context,
-                    widget: const FeedsScreen(),
+                    widget:  FeedsScreen(),
                   );
                 },
               ),

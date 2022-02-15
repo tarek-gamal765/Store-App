@@ -51,6 +51,7 @@ class CartScreen extends StatelessWidget {
           children: [
             Expanded(
               child: defaultButton(
+                onPressed: () {},
                 borderRadius: 20,
                 height: MediaQuery.of(context).size.height * 0.05,
                 width: MediaQuery.of(context).size.width * 0.4,
@@ -263,6 +264,7 @@ class CartScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.06,
           ),
           defaultButton(
+            onPressed: () {},
             borderRadius: 20,
             height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.9,

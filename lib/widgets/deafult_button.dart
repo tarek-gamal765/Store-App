@@ -7,6 +7,7 @@ Widget defaultButton({
   double? borderRadius,
   required String text,
   TextStyle? textStyle,
+  required Function()? onPressed,
 }) {
   return Container(
     height: height,
@@ -17,7 +18,7 @@ Widget defaultButton({
     ),
     clipBehavior: Clip.antiAlias,
     child: MaterialButton(
-      onPressed: () {},
+      onPressed: onPressed,
       child: Text(
         text,
         textAlign: TextAlign.center,

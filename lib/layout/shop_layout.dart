@@ -16,9 +16,9 @@ class ShopLayout extends StatefulWidget {
 
 class _ShopLayoutState extends State<ShopLayout> {
   int _selectedIndex = 0;
-  List<Map<String, dynamic>> pages = const [
+  List<Map<String, dynamic>> pages =  [
     {
-      'page': HomeScreen(),
+      'page': const HomeScreen(),
       'title': 'Home Screen',
     },
     {
@@ -26,14 +26,14 @@ class _ShopLayoutState extends State<ShopLayout> {
       'title': 'Feeds Screen',
     },
     {
-      'page': SearchScreen(),
+      'page': const SearchScreen(),
       'title': 'Search Screen',
     },
     {
-      'page': CartScreen(),
+      'page': const CartScreen(),
     },
     {
-      'page': UserScreen(),
+      'page': const UserScreen(),
     },
   ];
 

@@ -22,7 +22,7 @@ class _ShopLayoutState extends State<ShopLayout> {
       'title': 'Home Screen',
     },
     {
-      'page': FeedsScreen(),
+      'page': const FeedsScreen(),
       'title': 'Feeds Screen',
     },
     {

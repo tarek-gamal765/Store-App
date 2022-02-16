@@ -1,7 +1,11 @@
 import 'package:ecommerce/consts/theme_data.dart';
 import 'package:ecommerce/layout/shop_layout.dart';
 import 'package:ecommerce/network/local/shared_prefrence.dart';
+import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
+import 'package:ecommerce/screens/brands_screen.dart';
+import 'package:ecommerce/screens/categories_feeds_screen.dart';
+import 'package:ecommerce/screens/feeds_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -36,12 +40,22 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
+        ChangeNotifierProvider<ThemeProvider>(
           create: (context) => themeProvider,
+        ),
+        ChangeNotifierProvider<ProductsProvider>(
+          create: (context) => ProductsProvider(),
         ),
       ],
       child: Consumer<ThemeProvider>(
         builder: (ctx, ThemeProvider themeProvider, child) => MaterialApp(
+          routes: {
+            CategoriesFeedsScreen.routeName: (context) =>
+                const CategoriesFeedsScreen(),
+            BrandsScreen.routeName: (context) =>
+             const BrandsScreen(),
+             FeedsScreen.routeName: (context) => const FeedsScreen(),
+          },
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
           theme: themeProvider.getTheme

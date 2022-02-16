@@ -1,4 +1,3 @@
-import 'package:ecommerce/models/product_model.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/screens/product_details_screen.dart';
 import 'package:ecommerce/widgets/feeds_item.dart';
@@ -7,19 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class FeedsScreen extends StatelessWidget {
-  const FeedsScreen({Key? key}) : super(key: key);
-  static const routeName = '/FeedsScreen';
+class CategoriesFeedsScreen extends StatelessWidget {
+  const CategoriesFeedsScreen({Key? key}) : super(key: key);
 
+  static const routeName = '/CategoriesFeedsScreen';
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)!.settings.arguments;
-    List<ProductModel> products = [];
-    if (arguments == 'popular') {
-      products = Provider.of<ProductsProvider>(context).popularProduct;
-    } else {
-      products = Provider.of<ProductsProvider>(context).products;
-    }
+    final categoryName = ModalRoute.of(context)!.settings.arguments as String;
+    final products = Provider.of<ProductsProvider>(context).findByCategory(
+      categoryName: categoryName,
+    );
     return Scaffold(
       appBar: AppBar(),
       body: MasonryGridView.count(

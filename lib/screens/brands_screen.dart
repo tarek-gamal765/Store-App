@@ -1,16 +1,20 @@
+import 'package:ecommerce/screens/product_details_screen.dart';
+import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:ecommerce/provider/products_provider.dart';
+import 'package:ecommerce/widgets/brands_navigation_rail.dart';
+
 class BrandsScreen extends StatefulWidget {
-   BrandsScreen({Key? key,required this.selectedIndex}) : super(key: key);
- int selectedIndex = 0;
+  const BrandsScreen({Key? key}) : super(key: key);
+  static const routeName = '/BrandsScreen';
 
   @override
   State<BrandsScreen> createState() => _BrandsScreenState();
 }
 
 class _BrandsScreenState extends State<BrandsScreen> {
-  
-
-
   List<String> brandsName = [
     'Addidas',
     'Apple',
@@ -21,9 +25,31 @@ class _BrandsScreenState extends State<BrandsScreen> {
     'Huawei',
     'All',
   ];
+  String? routeArgs;
+  String? brand;
+  int selectedIndex = 0;
+  @override
+  void didChangeDependencies() {
+    routeArgs = ModalRoute.of(context)!.settings.arguments.toString();
+    selectedIndex = int.parse(
+      routeArgs!.substring(1, 2),
+    );
+    for (int i = 0; i < brandsName.length; i++) {
+      setState(() {
+        if (selectedIndex == i) {
+          setState(() {
+            brand = brandsName[selectedIndex];
+          });
+        }
+      });
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final allProducts = Provider.of<ProductsProvider>(context, listen: false);
+    final brandProducts = allProducts.findByBrand(brandName: brand!);
     return Scaffold(
       body: Row(
         children: <Widget>[
@@ -36,15 +62,11 @@ class _BrandsScreenState extends State<BrandsScreen> {
                     child: NavigationRail(
                       minWidth: MediaQuery.of(context).size.width * 0.14,
                       groupAlignment: 1.0,
-                      selectedIndex: widget.selectedIndex,
+                      selectedIndex: selectedIndex,
                       onDestinationSelected: (int index) {
                         setState(() {
-                          widget.selectedIndex = index;
-                          if (widget.selectedIndex == index) {
-                            setState(() {
-                              print(brandsName[widget.selectedIndex]);
-                            });
-                          }
+                          selectedIndex = index;
+                          brand = brandsName[selectedIndex];
                         });
                       },
                       labelType: NavigationRailLabelType.all,
@@ -102,9 +124,23 @@ class _BrandsScreenState extends State<BrandsScreen> {
                   left: 10,
                 ),
                 child: ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context, int index) =>
-                      brandsNavigationRail(context: context),
+                  itemCount: brandProducts.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        navigateTo(
+                          context: context,
+                          widget: ProductDetailsScreen(
+                            productModel: brandProducts[index],
+                          ),
+                        );
+                      },
+                      child: brandsNavigationRail(
+                        context: context,
+                        productModel: brandProducts[index],
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -113,103 +149,6 @@ class _BrandsScreenState extends State<BrandsScreen> {
       ),
     );
   }
-
-  Widget brandsNavigationRail({required BuildContext context}) => Container(
-        margin: const EdgeInsets.only(right: 10, bottom: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 5),
-        decoration: const BoxDecoration(
-          color: Colors.redAccent,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(10),
-            bottomRight: Radius.circular(10),
-          ),
-        ),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.3,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
-                  image: const DecorationImage(
-                    image: NetworkImage(
-                      'https://img.freepik.com/free-photo/pair-trainers_144627-3799.jpg?w=740',
-                    ),
-                  ),
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  ),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Colors.grey,
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 2.0)
-                  ],
-                ),
-              ),
-            ),
-            FittedBox(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
-                  borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0)),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Colors.grey,
-                        offset: Offset(5.0, 5.0),
-                        blurRadius: 10.0)
-                  ],
-                ),
-                margin: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                width: MediaQuery.of(context).size.width * 0.4,
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'title',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color:
-                            Theme.of(context).textSelectionTheme.selectionColor,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    const Text('US 16 \$',
-                        maxLines: 1,
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 26.0,
-                        )),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                    const Text(
-                      'CatergoryName',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20.0,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
 }
 
 NavigationRailDestination buildRotatedTextRailDestination(

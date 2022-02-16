@@ -9,7 +9,7 @@ Widget feedsItem({
 }) =>
     Container(
       color: Theme.of(context).backgroundColor,
-      height: MediaQuery.of(context).size.height * 0.36,
+      height: MediaQuery.of(context).size.height * 0.4,
       width: MediaQuery.of(context).size.width * 0.48,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -18,7 +18,6 @@ Widget feedsItem({
             children: [
               Image.network(
                 productModel!.imageUrl,
-                fit: BoxFit.fill,
                 height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width * 0.48,
                 filterQuality: FilterQuality.high,
@@ -48,12 +47,12 @@ Widget feedsItem({
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                 Padding(
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Text(
                     '\$ ${productModel.price}',
-                    overflow:  TextOverflow.ellipsis,
-                    style:const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
                       fontSize: 18,
                       color: Colors.black,
                       fontWeight: FontWeight.w900,
@@ -62,7 +61,7 @@ Widget feedsItem({
                 ),
                 Row(
                   children: [
-                     Text(
+                    Text(
                       'Quantity: ${productModel.quantity} left',
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(

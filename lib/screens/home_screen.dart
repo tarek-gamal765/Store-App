@@ -1,15 +1,18 @@
-
 import 'package:backdrop/backdrop.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecommerce/consts/colors.dart';
+import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/screens/brands_screen.dart';
+import 'package:ecommerce/screens/feeds_screen.dart';
+import 'package:ecommerce/screens/product_details_screen.dart';
 import 'package:ecommerce/widgets/back_layer_widget.dart';
 import 'package:ecommerce/widgets/category_item.dart';
 import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:ecommerce/widgets/popular_product_item.dart';
 import 'package:ecommerce/widgets/text_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,6 +40,7 @@ List<String> brandesImages = [
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final productProvider = Provider.of<ProductsProvider>(context);
     return BackdropScaffold(
       headerHeight: MediaQuery.of(context).size.height * 0.25,
       frontLayerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -80,45 +84,49 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       backLayer: backLayerWidget(context: context),
       frontLayer: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-                width: double.infinity,
-                child: CarouselSlider(
-                  items: carouselImages
-                      .map(
-                        (image) => Image.asset(image, fit: BoxFit.fill),
-                      )
-                      .toList(),
-                  options: CarouselOptions(
-                    viewportFraction: 1,
-                    initialPage: 0,
-                    enableInfiniteScroll: true,
-                    reverse: false,
-                    autoPlay: true,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration:
-                        const Duration(milliseconds: 500),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enlargeCenterPage: true,
-                    scrollDirection: Axis.horizontal,
-                  ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: double.infinity,
+              child: CarouselSlider(
+                items: carouselImages
+                    .map(
+                      (image) => Image.asset(
+                        image,
+                        fit: BoxFit.fill,
+                        width: double.infinity,
+                      ),
+                    )
+                    .toList(),
+                options: CarouselOptions(
+                  viewportFraction: 1,
+                  initialPage: 0,
+                  enableInfiniteScroll: true,
+                  reverse: false,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 500),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: true,
+                  scrollDirection: Axis.horizontal,
                 ),
               ),
-              const SizedBox(height: 15),
-              const Text(
+            ),
+            const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
                 'Categories',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: 15),
-              SizedBox(
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.22,
                 child: ListView.builder(
                   itemBuilder: (context, index) {
@@ -132,7 +140,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                 ),
               ),
-              Row(
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
                 children: [
                   const Text(
                     'Popular Brands',
@@ -145,53 +156,55 @@ class _HomeScreenState extends State<HomeScreen> {
                   defaultTextButton(
                     text: 'View all',
                     onPressed: () {
-                      navigateTo(
-                        context: context,
-                        widget: BrandsScreen(
-                          selectedIndex: 7,
-                        ),
+                      Navigator.pushNamed(
+                        context,
+                        BrandsScreen.routeName,
+                        arguments: {7},
                       );
                     },
                   )
                 ],
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.24,
-                child: Swiper(
-                  itemWidth: MediaQuery.of(context).size.height * 0.18,
-                  itemHeight: MediaQuery.of(context).size.height * 0.24,
-                  layout: SwiperLayout.DEFAULT,
-                  onTap: (index) {
-                    navigateTo(
-                      context: context,
-                      widget: BrandsScreen(
-                        selectedIndex: index,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.24,
+              child: Swiper(
+                autoplay: true,
+                itemWidth: MediaQuery.of(context).size.height * 0.18,
+                itemHeight: MediaQuery.of(context).size.height * 0.24,
+                layout: SwiperLayout.DEFAULT,
+                onTap: (index) {
+                  Navigator.pushNamed(
+                    context,
+                    BrandsScreen.routeName,
+                    arguments: {index},
+                  );
+                },
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: Image(
+                      image: AssetImage(
+                        brandesImages[index],
                       ),
-                    );
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image(
-                        image: AssetImage(
-                          brandesImages[index],
-                        ),
-                        fit: BoxFit.fill,
-                      ),
-                    );
-                  },
-                  itemCount: brandesImages.length,
-                  curve: Curves.fastOutSlowIn,
-                  fade: 1,
-                  duration: 400,
-                  viewportFraction: 0.8,
-                  scale: 0.9,
-                ),
+                      fit: BoxFit.fill,
+                    ),
+                  );
+                },
+                itemCount: brandesImages.length,
+                curve: Curves.fastOutSlowIn,
+                fade: 1,
+                duration: 400,
+                viewportFraction: 0.8,
+                scale: 0.9,
               ),
-              Row(
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
                 children: [
                   const Text(
                     'Popular Products',
@@ -203,26 +216,45 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Spacer(),
                   defaultTextButton(
                     text: 'View all',
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        FeedsScreen.routeName,
+                        arguments: 'popular',
+                      );
+                    },
                   )
                 ],
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.38,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10, bottom: 10),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.4,
                 child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      child: popularProductItem(context: context),
-                      onTap: () {},
-                    );
-                  },
                   itemCount: 7,
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      child: popularProductItem(
+                        context: context,
+                        productModel: productProvider.popularProduct[index],
+                      ),
+                      onTap: () {
+                        navigateTo(
+                          context: context,
+                          widget: ProductDetailsScreen(
+                            productModel: productProvider.popularProduct[index],
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

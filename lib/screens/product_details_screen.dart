@@ -1,4 +1,6 @@
 import 'package:ecommerce/consts/colors.dart';
+import 'package:ecommerce/models/product_model.dart';
+import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
 import 'package:ecommerce/widgets/deafult_button.dart';
 import 'package:ecommerce/widgets/divider.dart';
@@ -8,7 +10,11 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  const ProductDetailsScreen({Key? key}) : super(key: key);
+  const ProductDetailsScreen({
+    Key? key,
+    required this.productModel,
+  }) : super(key: key);
+  final ProductModel productModel;
 
   @override
   Widget build(BuildContext context) {
@@ -43,26 +49,23 @@ class ProductDetailsScreen extends StatelessWidget {
             foregroundDecoration: const BoxDecoration(
               color: Colors.black12,
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.22,
-              vertical: MediaQuery.of(context).size.height * 0.06,
-            ),
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.3,
             child: Image.network(
-              'https://img.freepik.com/free-psd/smartwatch-mock-up-design_1135-61.jpg?w=740',
+              productModel.imageUrl,
               fit: BoxFit.fill,
             ),
           ),
           SingleChildScrollView(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height * 0.07),
+              bottom: MediaQuery.of(context).size.height * 0.09,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.24,
+                  height: MediaQuery.of(context).size.height * 0.23,
                 ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
@@ -90,7 +93,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'title',
+                          productModel.title,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: TextStyle(
@@ -108,7 +111,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'US \$ 15',
+                          'US \$${productModel.price}',
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: TextStyle(
@@ -126,7 +129,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          'Description',
+                          productModel.description,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: TextStyle(
@@ -144,7 +147,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       detailsItem(
                         context: context,
                         title: 'Brand:',
-                        info: 'Brand Name',
+                        info: productModel.brand,
                       ),
                       const SizedBox(
                         height: 10,
@@ -152,7 +155,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       detailsItem(
                         context: context,
                         title: 'Quantity:',
-                        info: '12 left',
+                        info: '${productModel.quantity} left',
                       ),
                       const SizedBox(
                         height: 10,
@@ -160,7 +163,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       detailsItem(
                         context: context,
                         title: 'Category:',
-                        info: 'Category Name',
+                        info: productModel.productCategoryName,
                       ),
                       const SizedBox(
                         height: 10,
@@ -168,14 +171,16 @@ class ProductDetailsScreen extends StatelessWidget {
                       detailsItem(
                         context: context,
                         title: 'Popularity:',
-                        info: 'Popular',
+                        info:
+                            productModel.isPopular ? 'Popular' : 'Barely known',
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                     ],
                   ),
                 ),
-                defaultDivider(
-                  padding: const EdgeInsets.only(top: 15),
-                ),
+                defaultDivider(),
                 Container(
                   padding: const EdgeInsets.all(10),
                   width: double.infinity,
@@ -225,14 +230,18 @@ class ProductDetailsScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.only(left: 10),
-                  height: MediaQuery.of(context).size.height * 0.36,
+                  height: MediaQuery.of(context).size.height * 0.4,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 10,
                     itemBuilder: ((context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(right: 10),
-                        child: feedsItem(context: context),
+                        child: feedsItem(
+                          context: context,
+                          productModel: Provider.of<ProductsProvider>(context)
+                              .products[index],
+                        ),
                       );
                     }),
                   ),

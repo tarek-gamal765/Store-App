@@ -1,12 +1,15 @@
 import 'package:badges/badges.dart';
 import 'package:ecommerce/models/product_model.dart';
+import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 
 Widget popularProductItem({
   required BuildContext context,
   required ProductModel productModel,
 }) {
+  final cartProvider = Provider.of<CartProvider>(context);
   return Container(
     width: MediaQuery.of(context).size.height * 0.3,
     margin: const EdgeInsets.only(right: 8),
@@ -90,12 +93,26 @@ Widget popularProductItem({
                 ),
               ),
               IconButton(
-                onPressed: () {},
-                splashRadius: 25,
+                onPressed:
+                    cartProvider.getCartItems.containsKey(productModel.id)
+                        ? null
+                        : () {
+                            cartProvider.addProductToCart(
+                              productId: productModel.id,
+                              title: productModel.title,
+                              price: productModel.price,
+                              imageUrl: productModel.imageUrl,
+                              quantity: productModel.quantity,
+                            );
+                          },
                 iconSize: 25,
-                icon: const Icon(
-                  Icons.add_shopping_cart_outlined,
-                ),
+                icon: cartProvider.getCartItems.containsKey(productModel.id)
+                    ? const Icon(
+                        FeatherIcons.check,
+                      )
+                    : const Icon(
+                        Icons.add_shopping_cart_outlined,
+                      ),
               ),
             ],
           ),

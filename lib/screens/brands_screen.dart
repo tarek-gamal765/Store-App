@@ -48,8 +48,8 @@ class _BrandsScreenState extends State<BrandsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final allProducts = Provider.of<ProductsProvider>(context, listen: false);
-    final brandProducts = allProducts.findByBrand(brandName: brand!);
+    final productsProvider = Provider.of<ProductsProvider>(context, listen: false);
+    final brandProducts = productsProvider.findByBrand(brandName: brand!);
     return Scaffold(
       body: Row(
         children: <Widget>[
@@ -128,11 +128,10 @@ class _BrandsScreenState extends State<BrandsScreen> {
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
-                        navigateTo(
-                          context: context,
-                          widget: ProductDetailsScreen(
-                            productModel: brandProducts[index],
-                          ),
+                       Navigator.pushNamed(
+                          context,
+                          ProductDetailsScreen.routeName,
+                          arguments: brandProducts[index].id,
                         );
                       },
                       child: brandsNavigationRail(

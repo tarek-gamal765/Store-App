@@ -2,13 +2,13 @@ import 'package:backdrop/backdrop.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecommerce/consts/colors.dart';
+import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/screens/brands_screen.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';
 import 'package:ecommerce/screens/product_details_screen.dart';
 import 'package:ecommerce/widgets/back_layer_widget.dart';
 import 'package:ecommerce/widgets/category_item.dart';
-import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:ecommerce/widgets/popular_product_item.dart';
 import 'package:ecommerce/widgets/text_button.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductsProvider>(context);
+   
     return BackdropScaffold(
       headerHeight: MediaQuery.of(context).size.height * 0.25,
       frontLayerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -242,11 +243,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         productModel: productProvider.popularProduct[index],
                       ),
                       onTap: () {
-                        navigateTo(
-                          context: context,
-                          widget: ProductDetailsScreen(
-                            productModel: productProvider.popularProduct[index],
-                          ),
+                        Navigator.pushNamed(
+                          context,
+                          ProductDetailsScreen.routeName,
+                          arguments: productProvider.popularProduct[index].id,
                         );
                       },
                     );

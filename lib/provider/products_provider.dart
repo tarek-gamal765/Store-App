@@ -716,4 +716,7 @@ class ProductsProvider with ChangeNotifier {
   List<ProductModel> get popularProduct {
     return productsList.where((element) => element.isPopular).toList();
   }
+   ProductModel findById(String productId) {
+    return productsList.firstWhere((element) => element.id == productId);
+  }
 }

@@ -1,11 +1,13 @@
 import 'package:ecommerce/consts/theme_data.dart';
 import 'package:ecommerce/layout/shop_layout.dart';
 import 'package:ecommerce/network/local/shared_prefrence.dart';
+import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
 import 'package:ecommerce/screens/brands_screen.dart';
 import 'package:ecommerce/screens/categories_feeds_screen.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';
+import 'package:ecommerce/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +48,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<ProductsProvider>(
           create: (context) => ProductsProvider(),
         ),
+        ChangeNotifierProvider<CartProvider>(
+          create: (context) => CartProvider(),
+        ),
       ],
       child: Consumer<ThemeProvider>(
         builder: (ctx, ThemeProvider themeProvider, child) => MaterialApp(
@@ -55,6 +60,8 @@ class _MyAppState extends State<MyApp> {
             BrandsScreen.routeName: (context) =>
              const BrandsScreen(),
              FeedsScreen.routeName: (context) => const FeedsScreen(),
+             ProductDetailsScreen.routeName: (context) => const ProductDetailsScreen(),
+             
           },
           title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,

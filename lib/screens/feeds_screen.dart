@@ -31,11 +31,10 @@ class FeedsScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              navigateTo(
-                context: context,
-                widget: ProductDetailsScreen(
-                  productModel: products[index],
-                ),
+              Navigator.pushNamed(
+                context,
+                ProductDetailsScreen.routeName,
+                arguments: products[index].id,
               );
             },
             child: feedsItem(

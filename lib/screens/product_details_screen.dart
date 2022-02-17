@@ -1,5 +1,6 @@
 import 'package:ecommerce/consts/colors.dart';
 import 'package:ecommerce/models/product_model.dart';
+import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
 import 'package:ecommerce/widgets/deafult_button.dart';
@@ -10,14 +11,15 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
-  const ProductDetailsScreen({
-    Key? key,
-    required this.productModel,
-  }) : super(key: key);
-  final ProductModel productModel;
+  const ProductDetailsScreen({Key? key}) : super(key: key);
+  static const routeName = '/ProductDetailsScreen';
 
   @override
   Widget build(BuildContext context) {
+    final productId = ModalRoute.of(context)!.settings.arguments as String;
+    final productProvider = Provider.of<ProductsProvider>(context);
+    final productModel = productProvider.findById(productId);
+    final cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -256,9 +258,22 @@ class ProductDetailsScreen extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: defaultButton(
-                    onPressed: () {},
+                    onPressed:
+                        cartProvider.getCartItems.containsKey(productModel.id)
+                            ? null
+                            : () {
+                                cartProvider.addProductToCart(
+                                  productId: productModel.id,
+                                  title: productModel.title,
+                                  price: productModel.price,
+                                  imageUrl: productModel.imageUrl,
+                                  quantity: productModel.quantity,
+                                );
+                              },
                     color: Colors.purple,
-                    text: 'ADD TO CART',
+                    text: cartProvider.getCartItems.containsKey(productModel.id)
+                        ? 'Added To Cart'
+                        : 'ADD TO CART',
                     textStyle: const TextStyle(color: Colors.white),
                     height: 50,
                   ),

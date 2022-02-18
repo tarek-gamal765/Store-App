@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:ecommerce/models/product_model.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
+import 'package:ecommerce/provider/favourites_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ Widget popularProductItem({
   required ProductModel productModel,
 }) {
   final cartProvider = Provider.of<CartProvider>(context);
+  final favouritesProvider = Provider.of<FavouritesProvider>(context);
   return Container(
     width: MediaQuery.of(context).size.height * 0.3,
     margin: const EdgeInsets.only(right: 8),
@@ -37,10 +39,22 @@ Widget popularProductItem({
               top: 10,
               right: 10,
               child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  FeatherIcons.star,
-                ),
+                onPressed: () {
+                  favouritesProvider.addProductToFavourites(
+                    productId: productModel.id,
+                    title: productModel.title,
+                    price: productModel.price,
+                    imageUrl: productModel.imageUrl,
+                  );
+                },
+                icon: favouritesProvider.getfavouritesItems
+                        .containsKey(productModel.id)
+                    ? const Icon(
+                        Icons.star,
+                      )
+                    : const Icon(
+                        FeatherIcons.star,
+                      ),
               ),
             ),
             Positioned(

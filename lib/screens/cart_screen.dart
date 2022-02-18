@@ -2,9 +2,11 @@ import 'package:ecommerce/consts/colors.dart';
 import 'package:ecommerce/models/cart_model.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
+import 'package:ecommerce/screens/feeds_screen.dart';
 import 'package:ecommerce/screens/product_details_screen.dart';
 import 'package:ecommerce/widgets/deafult_button.dart';
 import 'package:ecommerce/widgets/dialog.dart';
+import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
@@ -35,9 +37,6 @@ class CartScreen extends StatelessWidget {
                       subTitle: 'Your cart will be cleared!',
                       ok: () {
                         cartProvider.clearCart();
-                        Navigator.of(context).pop();
-                      },
-                      cancel: () {
                         Navigator.of(context).pop();
                       },
                     );
@@ -82,8 +81,6 @@ class CartScreen extends StatelessWidget {
           : null,
     );
   }
-
-  
 
   Widget buildCartItem({
     required BuildContext context,
@@ -146,9 +143,6 @@ class CartScreen extends StatelessWidget {
                               );
                               Navigator.of(context).pop();
                             },
-                            cancel: () {
-                              Navigator.of(context).pop();
-                            },
                           );
                         },
                       ),
@@ -209,9 +203,6 @@ class CartScreen extends StatelessWidget {
                           : () {
                               cartProvider.reduceQuantityByOne(
                                 productId: cartModel.id,
-                                imageUrl: cartModel.imageUrl,
-                                price: cartModel.price,
-                                title: cartModel.title,
                               );
                             },
                     ),
@@ -297,7 +288,12 @@ class CartScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.06,
           ),
           defaultButton(
-            onPressed: () {},
+            onPressed: () {
+              navigateTo(
+                context: context,
+                widget: const FeedsScreen(),
+              );
+            },
             borderRadius: 20,
             height: MediaQuery.of(context).size.height * 0.06,
             width: MediaQuery.of(context).size.width * 0.9,

@@ -1,11 +1,16 @@
+import 'package:badges/badges.dart';
 import 'package:ecommerce/consts/colors.dart';
 import 'package:ecommerce/models/product_model.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
+import 'package:ecommerce/provider/favourites_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
+import 'package:ecommerce/screens/cart_screen.dart';
+import 'package:ecommerce/screens/wishlist_screen.dart';
 import 'package:ecommerce/widgets/deafult_button.dart';
 import 'package:ecommerce/widgets/divider.dart';
 import 'package:ecommerce/widgets/feeds_item.dart';
+import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
@@ -20,31 +25,8 @@ class ProductDetailsScreen extends StatelessWidget {
     final productProvider = Provider.of<ProductsProvider>(context);
     final productModel = productProvider.findById(productId);
     final cartProvider = Provider.of<CartProvider>(context);
+    final favouritesProvider = Provider.of<FavouritesProvider>(context);
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          'Details',
-          style: TextStyle(
-            fontSize: 20,
-            color: Theme.of(context).textSelectionTheme.selectionColor,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(FeatherIcons.heart),
-            color: Colors.red,
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(FeatherIcons.shoppingCart),
-            color: Colors.purple,
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           Container(
@@ -55,7 +37,6 @@ class ProductDetailsScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.3,
             child: Image.network(
               productModel.imageUrl,
-              fit: BoxFit.fill,
             ),
           ),
           SingleChildScrollView(
@@ -251,6 +232,71 @@ class ProductDetailsScreen extends StatelessWidget {
               ],
             ),
           ),
+          Positioned(
+            top: 0,
+            right: 0,
+            left: 0,
+            child: AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.transparent,
+              title: Text(
+                'Details',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Theme.of(context).textSelectionTheme.selectionColor,
+                ),
+              ),
+              centerTitle: true,
+              actions: [
+                Badge(
+                  animationType: BadgeAnimationType.slide,
+                  position: BadgePosition.topEnd(
+                    top: 5,
+                    end: 7,
+                  ),
+                  badgeColor: Colors.purple,
+                  badgeContent: Text(
+                    '${favouritesProvider.getfavouritesItems.length}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      navigateTo(
+                        context: context,
+                        widget: const WishlistScreen(),
+                      );
+                    },
+                    icon: const Icon(FeatherIcons.heart),
+                    color: Colors.red,
+                    iconSize: 28,
+                  ),
+                ),
+                Badge(
+                  animationType: BadgeAnimationType.slide,
+                  position: BadgePosition.topEnd(
+                    top: 5,
+                    end: 7,
+                  ),
+                  badgeColor: Colors.purple,
+                  badgeContent: Text(
+                    '${cartProvider.getCartItems.length}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      navigateTo(
+                        context: context,
+                        widget: const CartScreen(),
+                      );
+                    },
+                    icon: const Icon(FeatherIcons.shoppingCart),
+                    color: Colors.purple,
+                    iconSize: 28,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Row(
@@ -312,7 +358,14 @@ class ProductDetailsScreen extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      favouritesProvider.addProductToFavourites(
+                        productId: productId,
+                        title: productModel.title,
+                        price: productModel.price,
+                        imageUrl: productModel.imageUrl,
+                      );
+                    },
                     splashColor: ColorsConsts.favColor,
                     child: Container(
                       color: Provider.of<ThemeProvider>(context).getTheme
@@ -320,9 +373,15 @@ class ProductDetailsScreen extends StatelessWidget {
                           : ColorsConsts.subTitle,
                       height: 50,
                       padding: const EdgeInsets.all(10),
-                      child: const Icon(
-                        FeatherIcons.heart,
-                        color: Colors.white,
+                      child: Icon(
+                        favouritesProvider.getfavouritesItems
+                                .containsKey(productModel.id)
+                            ? Icons.favorite
+                            : FeatherIcons.heart,
+                        color: favouritesProvider.getfavouritesItems
+                                .containsKey(productModel.id)
+                            ? Colors.red
+                            : Colors.white,
                       ),
                     ),
                   ),

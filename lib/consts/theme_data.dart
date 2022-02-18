@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Styles {
   static ThemeData lightTheme({required BuildContext context}) {
     return ThemeData(
+      
       scaffoldBackgroundColor: Colors.grey.shade300,
       primarySwatch: Colors.purple,
       primaryColor: Colors.grey.shade300,
@@ -22,8 +23,12 @@ class Styles {
       buttonTheme: Theme.of(context)
           .buttonTheme
           .copyWith(colorScheme: const ColorScheme.light()),
-      appBarTheme: const AppBarTheme(
+      appBarTheme:  AppBarTheme(
+        iconTheme: IconThemeData(
+          color: Theme.of(context).textSelectionTheme.selectionColor,
+        ) ,
         elevation: 0.0,
+        
       ),
     );
   }

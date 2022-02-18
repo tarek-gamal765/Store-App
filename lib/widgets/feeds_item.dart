@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:ecommerce/models/product_model.dart';
+import 'package:ecommerce/widgets/feeds_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
@@ -72,7 +73,12 @@ Widget feedsItem({
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        feedsDialog(
+                          context: context,
+                          productModel: productModel,
+                        );
+                      },
                       icon: const Icon(
                         FeatherIcons.moreHorizontal,
                       ),

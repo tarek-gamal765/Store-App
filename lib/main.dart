@@ -2,6 +2,7 @@ import 'package:ecommerce/consts/theme_data.dart';
 import 'package:ecommerce/layout/shop_layout.dart';
 import 'package:ecommerce/network/local/shared_prefrence.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
+import 'package:ecommerce/provider/favourites_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
 import 'package:ecommerce/screens/brands_screen.dart';
@@ -50,6 +51,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider<CartProvider>(
           create: (context) => CartProvider(),
+        ),
+         ChangeNotifierProvider<FavouritesProvider>(
+          create: (context) => FavouritesProvider(),
         ),
       ],
       child: Consumer<ThemeProvider>(

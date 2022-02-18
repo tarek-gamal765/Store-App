@@ -6,7 +6,6 @@ Future defaultDialog({
   required String title,
   required String subTitle,
   required VoidCallback ok,
-  required VoidCallback cancel,
 }) async {
   return showDialog(
       context: context,
@@ -36,7 +35,9 @@ Future defaultDialog({
           actions: [
             defaultTextButton(
               text: 'Cancel',
-              onPressed: cancel,
+              onPressed: () {
+                Navigator.pop(context);
+              },
               textStyle: const TextStyle(color: Colors.red),
             ),
             defaultTextButton(

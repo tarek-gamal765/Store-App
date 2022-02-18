@@ -13,7 +13,7 @@ class CartProvider with ChangeNotifier {
     cartItems.forEach((key, value) {
       total += value.price * value.quantity;
     });
-   // notifyListeners();
+    // notifyListeners();
     return total;
   }
 
@@ -50,12 +50,7 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void reduceQuantityByOne({
-    required String productId,
-    required String title,
-    required double price,
-    required String imageUrl,
-  }) {
+  void reduceQuantityByOne({required String productId}) {
     if (cartItems.containsKey(productId)) {
       cartItems.update(
         productId,

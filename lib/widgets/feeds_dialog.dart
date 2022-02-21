@@ -72,14 +72,12 @@ Future feedsDialog({
                         context: context,
                         index: 1,
                         onPressed: () {
-                          Navigator.of(context).pushNamed(
-                            ProductDetailsScreen.routeName,
-                            arguments: productModel.id,
-                          ).then((value) => Navigator.of(context).pop());
-                          
-                          // Navigator.of(context).canPop()
-                          //     ? Navigator.of(context).pop()
-                          //     : null;
+                          Navigator.of(context)
+                              .pushNamed(
+                                ProductDetailsScreen.routeName,
+                                arguments: productModel.id,
+                              )
+                              .then((value) => Navigator.of(context).pop());
                         },
                       ),
                     ),

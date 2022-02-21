@@ -1,13 +1,16 @@
 import 'package:ecommerce/consts/theme_data.dart';
-import 'package:ecommerce/layout/shop_layout.dart';
+import 'package:ecommerce/widgets/bottom_nav_bar.dart';
 import 'package:ecommerce/network/local/shared_prefrence.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/favourites_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
+import 'package:ecommerce/screens/auth/login.dart';
+import 'package:ecommerce/screens/auth/sign_up.dart';
 import 'package:ecommerce/screens/brands_screen.dart';
 import 'package:ecommerce/screens/categories_feeds_screen.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';
+import 'package:ecommerce/screens/landing_screen.dart';
 import 'package:ecommerce/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +55,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider<CartProvider>(
           create: (context) => CartProvider(),
         ),
-         ChangeNotifierProvider<FavouritesProvider>(
+        ChangeNotifierProvider<FavouritesProvider>(
           create: (context) => FavouritesProvider(),
         ),
       ],
@@ -61,18 +64,20 @@ class _MyAppState extends State<MyApp> {
           routes: {
             CategoriesFeedsScreen.routeName: (context) =>
                 const CategoriesFeedsScreen(),
-            BrandsScreen.routeName: (context) =>
-             const BrandsScreen(),
-             FeedsScreen.routeName: (context) => const FeedsScreen(),
-             ProductDetailsScreen.routeName: (context) => const ProductDetailsScreen(),
-             
+            BrandsScreen.routeName: (context) => const BrandsScreen(),
+            FeedsScreen.routeName: (context) => const FeedsScreen(),
+            ProductDetailsScreen.routeName: (context) =>
+                const ProductDetailsScreen(),
+            LoginScreen.routeName: (context) => const LoginScreen(),
+            SignUpScreen.routeName: (context) => const SignUpScreen(),
           },
-          title: 'Flutter Demo',
+
+          title: 'E Commerce',
           debugShowCheckedModeBanner: false,
           theme: themeProvider.getTheme
               ? Styles.darkTheme(context: context)
               : Styles.lightTheme(context: context),
-          home: ShopLayout(),
+          home: const LandingScreen(),
         ),
       ),
     );

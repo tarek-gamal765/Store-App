@@ -716,7 +716,18 @@ class ProductsProvider with ChangeNotifier {
   List<ProductModel> get popularProduct {
     return productsList.where((element) => element.isPopular).toList();
   }
-   ProductModel findById(String productId) {
-    return productsList.firstWhere((element) => element.id == productId);
+
+  ProductModel findById(String productId) {
+    return productsList.firstWhere(
+        (element) => element.id.toLowerCase() == productId.toLowerCase());
+  }
+
+  List<ProductModel> searchQuery(String searchText) {
+    List<ProductModel> searchList = productsList
+        .where((element) => element.productCategoryName
+            .toLowerCase()
+            .contains(searchText.toLowerCase()))
+        .toList();
+    return searchList;
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:ecommerce/screens/search_screen.dart';
 import 'package:ecommerce/screens/cart_screen.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';
@@ -7,16 +6,16 @@ import 'package:ecommerce/screens/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
-class ShopLayout extends StatefulWidget {
-  ShopLayout({Key? key}) : super(key: key);
+class BottomNavBar extends StatefulWidget {
+  const BottomNavBar({Key? key}) : super(key: key);
 
   @override
-  State<ShopLayout> createState() => _ShopLayoutState();
+  State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
-class _ShopLayoutState extends State<ShopLayout> {
+class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
-  List<Map<String, dynamic>> pages =  [
+  List<Map<String, dynamic>> pages = [
     {
       'page': const HomeScreen(),
       'title': 'Home Screen',

@@ -1,5 +1,4 @@
 import 'package:ecommerce/screens/product_details_screen.dart';
-import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -131,7 +130,7 @@ class _BrandsScreenState extends State<BrandsScreen> {
                        Navigator.pushNamed(
                           context,
                           ProductDetailsScreen.routeName,
-                          arguments: brandProducts[index].id,
+                          arguments: brandProducts[index].productId,
                         );
                       },
                       child: brandsNavigationRail(

@@ -1,7 +1,9 @@
 import 'package:ecommerce/consts/colors.dart';
 import 'package:ecommerce/screens/cart_screen.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';
+import 'package:ecommerce/screens/wishlist_screen.dart';
 import 'package:ecommerce/widgets/navigation_widget.dart';
+import 'package:ecommerce/screens/upload_product_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
@@ -122,7 +124,7 @@ Widget backLayerWidget({
                 onPressed: () {
                   navigateTo(
                     context: context,
-                    widget:  FeedsScreen(),
+                    widget: const FeedsScreen(),
                   );
                 },
               ),
@@ -133,18 +135,18 @@ Widget backLayerWidget({
                 onPressed: () {
                   navigateTo(
                     context: context,
-                    widget:  FeedsScreen(),
+                    widget: const WishlistScreen(),
                   );
                 },
               ),
               content(
                 context: context,
-                icon: FeatherIcons.rss,
+                icon: FeatherIcons.upload,
                 text: 'Upload a new product',
                 onPressed: () {
                   navigateTo(
                     context: context,
-                    widget:  FeedsScreen(),
+                    widget: const UploadProductForm(),
                   );
                 },
               ),

@@ -4,6 +4,7 @@ Widget defaultOutlinedButton({
   required String text,
   required Color borderColor,
   required VoidCallback onPressed,
+  required Color textColor,
 }) {
   return OutlinedButton(
     style: ButtonStyle(
@@ -23,8 +24,8 @@ Widget defaultOutlinedButton({
     onPressed: onPressed,
     child: Text(
       text,
-      style: const TextStyle(
-        color: Colors.black,
+      style:  TextStyle(
+        color: textColor,
       ),
     ),
   );

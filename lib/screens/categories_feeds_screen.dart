@@ -30,7 +30,7 @@ class CategoriesFeedsScreen extends StatelessWidget {
                Navigator.pushNamed(
                 context,
                 ProductDetailsScreen.routeName,
-                arguments: products[index].id,
+                arguments: products[index].productId,
               );
             },
             child: feedsItem(

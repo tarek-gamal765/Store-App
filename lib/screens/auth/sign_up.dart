@@ -1,18 +1,22 @@
 import 'dart:io';
 
 import 'package:ecommerce/consts/colors.dart';
+import 'package:ecommerce/provider/auth_provider.dart';
+import 'package:ecommerce/widgets/custom_toast.dart';
 import 'package:ecommerce/widgets/outlined_button.dart';
-import 'package:ecommerce/widgets/text_button.dart';
 import 'package:ecommerce/widgets/text_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
   static const routeName = '/SignUpScreen';
+
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -20,42 +24,61 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final _emailFocusNode = FocusNode();
   final _phoneFocusNode = FocusNode();
-  final _passwordlFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
   bool _obscureText = true;
   String? _name;
   String? _phone;
   String? _emailAddress;
   String? _password;
   final _formKey = GlobalKey<FormState>();
-  File? _pickedImage;
 
   @override
   void dispose() {
     _emailFocusNode.dispose();
     _phoneFocusNode.dispose();
-    _passwordlFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
   void submit() {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     FocusScope.of(context).unfocus();
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+    if (authProvider.userImage != null) {
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState!.save();
+        authProvider
+            .userRegister(
+          name: _name!,
+          phone: _phone!,
+          email: _emailAddress!,
+          password: _password!,
+        )
+            .then((value) {
+          Navigator.canPop(context) ? Navigator.pop(context) : null;
+        }).catchError(
+          (error) {
+            customFlushBar(
+              context: context,
+              message: error.toString(),
+              title: 'Error',
+              backgroundColor: Colors.red,
+            );
+          },
+        );
+      }
+    } else {
+      customFlushBar(
+        context: context,
+        message: 'Please, pick an image',
+        title: '',
+        backgroundColor: Colors.red,
+      );
     }
-  }
-
-  void pickImage({required ImageSource source}) async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: source);
-    final pickedImageFile = File(pickedImage!.path);
-    setState(() {
-      _pickedImage = pickedImageFile;
-    });
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -116,12 +139,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                             ),
-                            child: _pickedImage == null
+                            child: authProvider.userImage == null
                                 ? Image.network(
                                     'https://as1.ftcdn.net/v2/jpg/03/46/83/96/1000_F_346839683_6nAPzbhpSkIpb8pmAwufkC7c5eD7wYws.jpg',
                                   )
                                 : Image.file(
-                                    _pickedImage!,
+                                    authProvider.userImage!,
                                   ),
                           ),
                         ),
@@ -146,17 +169,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         context: context,
                                         title: 'Camera',
                                         icon: Icons.camera_alt,
-                                        onTap: () => pickImage(
-                                          source: ImageSource.camera,
-                                        ),
+                                        onTap: () {
+                                          authProvider.getUserImage(
+                                            source: ImageSource.camera,
+                                          );
+                                          Navigator.pop(context);
+                                        },
                                       ),
                                       dialogContent(
                                         context: context,
                                         title: 'Gallery',
                                         icon: Icons.photo,
-                                        onTap: () => pickImage(
-                                          source: ImageSource.gallery,
-                                        ),
+                                        onTap: () {
+                                          authProvider.getUserImage(
+                                            source: ImageSource.gallery,
+                                          );
+                                          Navigator.pop(context);
+                                        },
                                       ),
                                       dialogContent(
                                         context: context,
@@ -164,7 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         icon: Icons.remove_circle,
                                         onTap: () {
                                           setState(() {
-                                            _pickedImage = null;
+                                            authProvider.userImage = null;
                                           });
                                           Navigator.pop(context);
                                         },
@@ -190,7 +219,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       key: 'name',
                       labelText: 'Name',
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Please enter your name';
                         }
                         return null;
@@ -203,7 +232,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onSaved: (value) {
                         _name = value;
                       },
-                      prefixIcon: Icons.person,
+                      prefixIcon: const Icon(
+                        Icons.person,
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
@@ -212,7 +243,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       key: 'phone',
                       labelText: 'Phone',
                       validator: (value) {
-                        if (value!.isEmpty) {
+                        if (value!.trim().isEmpty) {
                           return 'Please enter your phone number';
                         }
                         if (value.trim().length != 11) {
@@ -223,12 +254,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       textInputAction: TextInputAction.next,
                       onEditingComplete: () =>
                           FocusScope.of(context).requestFocus(_emailFocusNode),
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       keyboardType: TextInputType.phone,
                       fillColor: Theme.of(context).backgroundColor,
                       onSaved: (value) {
-                        _password = value;
+                        _phone = value;
                       },
-                      prefixIcon: Icons.email,
+                      prefixIcon: const Icon(
+                        Icons.phone,
+                      ),
                       focusNode: _phoneFocusNode,
                     ),
                     const SizedBox(
@@ -238,21 +272,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       key: 'email',
                       labelText: 'Email Address',
                       validator: (value) {
-                        if (value!.isEmpty || !value.contains('@')) {
+                        if (value!.trim().isEmpty ||
+                            !value.trim().contains('@')) {
                           return 'Please enter a valid email address';
                         }
                         return null;
                       },
                       textInputAction: TextInputAction.next,
                       onEditingComplete: () => FocusScope.of(context)
-                          .requestFocus(_passwordlFocusNode),
+                          .requestFocus(_passwordFocusNode),
                       focusNode: _emailFocusNode,
                       keyboardType: TextInputType.emailAddress,
                       fillColor: Theme.of(context).backgroundColor,
                       onSaved: (value) {
                         _emailAddress = value;
                       },
-                      prefixIcon: Icons.email,
+                      prefixIcon: const Icon(Icons.email),
                     ),
                     const SizedBox(
                       height: 20,
@@ -261,7 +296,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       key: 'password',
                       labelText: 'Password',
                       validator: (value) {
-                        if (value!.isEmpty || value.length < 7) {
+                        if (value!.trim().isEmpty || value.trim().length < 7) {
                           return 'Please enter a valid password';
                         }
                         return null;
@@ -274,8 +309,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         _password = value;
                       },
                       obscureText: _obscureText,
-                      prefixIcon: Icons.email,
-                      focusNode: _passwordlFocusNode,
+                      prefixIcon: const Icon(Icons.lock),
+                      focusNode: _passwordFocusNode,
                       suffixIcon: InkWell(
                         onTap: () {
                           setState(() {
@@ -371,11 +406,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 onPressed: () {},
                                 text: 'Google + ',
                                 borderColor: Colors.red,
+                                textColor: Theme.of(context)
+                                    .textSelectionTheme
+                                    .selectionColor!,
                               ),
                               defaultOutlinedButton(
                                 onPressed: () {},
                                 text: 'Sign in as a guest',
                                 borderColor: Colors.deepPurple,
+                                textColor: Theme.of(context)
+                                    .textSelectionTheme
+                                    .selectionColor!,
                               ),
                             ],
                           ),

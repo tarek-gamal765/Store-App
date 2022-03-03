@@ -18,7 +18,7 @@ Widget feedsItem({
           Stack(
             children: [
               Image.network(
-                productModel!.imageUrl,
+                productModel!.imageUrl!,
                 height: MediaQuery.of(context).size.height * 0.2,
                 width: MediaQuery.of(context).size.width * 0.48,
                 filterQuality: FilterQuality.high,
@@ -40,7 +40,7 @@ Widget feedsItem({
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  productModel.title,
+                  productModel.title!,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 15,

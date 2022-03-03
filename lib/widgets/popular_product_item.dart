@@ -30,7 +30,7 @@ Widget popularProductItem({
           children: [
             Image(
               image: NetworkImage(
-                productModel.imageUrl,
+                productModel.imageUrl!,
               ),
               height: MediaQuery.of(context).size.height * 0.25,
               width: MediaQuery.of(context).size.height * 0.34,
@@ -41,14 +41,14 @@ Widget popularProductItem({
               child: IconButton(
                 onPressed: () {
                   favouritesProvider.addProductToFavourites(
-                    productId: productModel.id,
-                    title: productModel.title,
-                    price: productModel.price,
-                    imageUrl: productModel.imageUrl,
+                    productId: productModel.productId!,
+                    title: productModel.title!,
+                    price: productModel.price!,
+                    imageUrl: productModel.imageUrl!,
                   );
                 },
                 icon: favouritesProvider.getfavouritesItems
-                        .containsKey(productModel.id)
+                        .containsKey(productModel.productId)
                     ? const Icon(
                         Icons.star,
                       )
@@ -79,7 +79,7 @@ Widget popularProductItem({
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: Text(
-            productModel.title,
+            productModel.title!,
             maxLines: 1,
             style: const TextStyle(
               fontSize: 18,
@@ -96,7 +96,7 @@ Widget popularProductItem({
             children: [
               Expanded(
                 child: Text(
-                  productModel.description,
+                  productModel.description!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -107,20 +107,21 @@ Widget popularProductItem({
                 ),
               ),
               IconButton(
-                onPressed:
-                    cartProvider.getCartItems.containsKey(productModel.id)
-                        ? null
-                        : () {
-                            cartProvider.addProductToCart(
-                              productId: productModel.id,
-                              title: productModel.title,
-                              price: productModel.price,
-                              imageUrl: productModel.imageUrl,
-                              quantity: productModel.quantity,
-                            );
-                          },
+                onPressed: cartProvider.getCartItems
+                        .containsKey(productModel.productId)
+                    ? null
+                    : () {
+                        cartProvider.addProductToCart(
+                          productId: productModel.productId!,
+                          title: productModel.title!,
+                          price: productModel.price!,
+                          imageUrl: productModel.imageUrl!,
+                          quantity: productModel.quantity,
+                        );
+                      },
                 iconSize: 25,
-                icon: cartProvider.getCartItems.containsKey(productModel.id)
+                icon: cartProvider.getCartItems
+                        .containsKey(productModel.productId)
                     ? const Icon(
                         FeatherIcons.check,
                       )

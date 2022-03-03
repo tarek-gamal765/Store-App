@@ -1,15 +1,20 @@
 import 'package:ecommerce/consts/colors.dart';
-import 'package:ecommerce/widgets/deafult_button.dart';
-import 'package:ecommerce/widgets/outlined_button.dart';
+import 'package:ecommerce/provider/auth_provider.dart';
+import 'package:ecommerce/screens/auth/forget_password.dart';
+import 'package:ecommerce/widgets/custom_toast.dart';
+import 'package:ecommerce/widgets/navigation_widget.dart';
+import 'package:ecommerce/widgets/text_button.dart';
 import 'package:ecommerce/widgets/text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:wave/config.dart';
 import 'package:wave/wave.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
   static const routeName = '/LoginScreen';
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -20,10 +25,26 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _emailAddress;
   String? _password;
   final _formKey = GlobalKey<FormState>();
+
   void submit() {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      Provider.of<AuthProvider>(context, listen: false)
+          .userLogin(
+        email: _emailAddress!,
+        password: _password!,
+      )
+          .then((value) {
+        Navigator.canPop(context) ? Navigator.pop(context) : null;
+      }).catchError((error) {
+        customFlushBar(
+          context: context,
+          message: error.toString(),
+          title: 'Error',
+          backgroundColor: Colors.red,
+        );
+      });
     }
   }
 
@@ -85,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: const Image(
                         image: NetworkImage(
-                          'https://img.freepik.com/free-photo/bohemian-man-with-his-arms-crossed_1368-3542.jpg?w=740',
+                          'https://cdn-icons-png.flaticon.com/512/869/869636.png',
                         ),
                       ),
                     ),
@@ -109,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onSaved: (value) {
                         _emailAddress = value;
                       },
-                      prefixIcon: Icons.email,
+                      prefixIcon: const Icon(Icons.email),
                     ),
                     const SizedBox(
                       height: 20,
@@ -131,7 +152,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         _password = value;
                       },
                       obscureText: _obscureText,
-                      prefixIcon: Icons.email,
+                      prefixIcon: const Icon(
+                        Icons.lock,
+                      ),
                       focusNode: _focusNode,
                       suffixIcon: InkWell(
                         onTap: () {
@@ -148,6 +171,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(
                       height: 5,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: defaultTextButton(
+                        text: 'Forget Password',
+                        textStyle: const TextStyle(
+                          decoration: TextDecoration.underline,
+                        ),
+                        onPressed: () {
+                          navigateTo(
+                            context: context,
+                            widget: const ForgetPassword(),
+                          );
+                        },
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -186,58 +224,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ],
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.35,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: const [
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Divider(
-                                    color: Colors.white,
-                                    thickness: 2,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'Or continue with',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Divider(
-                                    color: Colors.white,
-                                    thickness: 2,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              defaultOutlinedButton(
-                                onPressed: () {},
-                                text: 'Google + ',
-                                borderColor: Colors.red,
-                              ),
-                              defaultOutlinedButton(
-                                onPressed: () {},
-                                text: 'Sign in as a guest',
-                                borderColor: Colors.deepPurple,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),

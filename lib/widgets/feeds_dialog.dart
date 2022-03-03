@@ -40,7 +40,7 @@ Future feedsDialog({
                 color: Theme.of(context).scaffoldBackgroundColor,
               ),
               child: Image.network(
-                productModel.imageUrl,
+                productModel.imageUrl!,
               ),
             ),
             Container(
@@ -55,10 +55,10 @@ Future feedsDialog({
                         index: 0,
                         onPressed: () {
                           favouritesProvider.addProductToFavourites(
-                            productId: productModel.id,
-                            title: productModel.title,
-                            price: productModel.price,
-                            imageUrl: productModel.imageUrl,
+                            productId: productModel.productId!,
+                            title: productModel.title!,
+                            price: productModel.price!,
+                            imageUrl: productModel.imageUrl!,
                           );
                           Navigator.of(context).canPop()
                               ? Navigator.of(context).pop()
@@ -75,7 +75,7 @@ Future feedsDialog({
                           Navigator.of(context)
                               .pushNamed(
                                 ProductDetailsScreen.routeName,
-                                arguments: productModel.id,
+                                arguments: productModel.productId,
                               )
                               .then((value) => Navigator.of(context).pop());
                         },
@@ -88,10 +88,10 @@ Future feedsDialog({
                         index: 2,
                         onPressed: () {
                           cartProvider.addProductToCart(
-                            productId: productModel.id,
-                            title: productModel.title,
-                            price: productModel.price,
-                            imageUrl: productModel.imageUrl,
+                            productId: productModel.productId!,
+                            title: productModel.title!,
+                            price: productModel.price!,
+                            imageUrl: productModel.imageUrl!,
                           );
                           Navigator.of(context).canPop()
                               ? Navigator.of(context).pop()
@@ -140,27 +140,27 @@ Widget dialogContent({
   final cartProvider = Provider.of<CartProvider>(context);
   final favouritesProvider = Provider.of<FavouritesProvider>(context);
   List<IconData> _dialogIcons = [
-    favouritesProvider.getfavouritesItems.containsKey(productModel.id)
+    favouritesProvider.getfavouritesItems.containsKey(productModel.productId)
         ? Icons.favorite
         : FeatherIcons.heart,
     FeatherIcons.eye,
-    cartProvider.getCartItems.containsKey(productModel.id)
+    cartProvider.getCartItems.containsKey(productModel.productId)
         ? Icons.shopping_cart
         : Icons.add_shopping_cart,
     FeatherIcons.trash,
   ];
 
   List<String> _texts = [
-    favouritesProvider.getfavouritesItems.containsKey(productModel.id)
+    favouritesProvider.getfavouritesItems.containsKey(productModel.productId)
         ? 'In wishlist'
         : 'Add to wishlist',
     'View product',
-    cartProvider.getCartItems.containsKey(productModel.id)
+    cartProvider.getCartItems.containsKey(productModel.productId)
         ? 'In Cart '
         : 'Add to cart',
   ];
   List<Color> _colors = [
-    favouritesProvider.getfavouritesItems.containsKey(productModel.id)
+    favouritesProvider.getfavouritesItems.containsKey(productModel.productId)
         ? Colors.red
         : Theme.of(context).textSelectionTheme.selectionColor!,
     Theme.of(context).textSelectionTheme.selectionColor!,

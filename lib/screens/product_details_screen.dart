@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart';
 import 'package:ecommerce/consts/colors.dart';
-import 'package:ecommerce/models/product_model.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/favourites_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
@@ -36,7 +35,7 @@ class ProductDetailsScreen extends StatelessWidget {
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.3,
             child: Image.network(
-              productModel.imageUrl,
+              productModel.imageUrl!,
             ),
           ),
           SingleChildScrollView(
@@ -76,7 +75,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          productModel.title,
+                          productModel.title!,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: TextStyle(
@@ -112,7 +111,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Text(
-                          productModel.description,
+                          productModel.description!,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                           style: TextStyle(
@@ -130,7 +129,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       detailsItem(
                         context: context,
                         title: 'Brand:',
-                        info: productModel.brand,
+                        info: productModel.brand!,
                       ),
                       const SizedBox(
                         height: 10,
@@ -146,7 +145,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       detailsItem(
                         context: context,
                         title: 'Category:',
-                        info: productModel.productCategoryName,
+                        info: productModel.productCategoryName!,
                       ),
                       const SizedBox(
                         height: 10,
@@ -154,8 +153,9 @@ class ProductDetailsScreen extends StatelessWidget {
                       detailsItem(
                         context: context,
                         title: 'Popularity:',
-                        info:
-                            productModel.isPopular ? 'Popular' : 'Barely known',
+                        info: productModel.isPopular!
+                            ? 'Popular'
+                            : 'Barely known',
                       ),
                       const SizedBox(
                         height: 10,
@@ -216,14 +216,25 @@ class ProductDetailsScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.4,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 10,
+                    itemCount: productProvider.products.length < 7
+                        ? productProvider.products.length
+                        : 7,
                     itemBuilder: ((context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: feedsItem(
-                          context: context,
-                          productModel: Provider.of<ProductsProvider>(context)
-                              .products[index],
+                      return InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            ProductDetailsScreen.routeName,
+                            arguments:
+                                productProvider.products[index].productId,
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: feedsItem(
+                            context: context,
+                            productModel: productProvider.products[index],
+                          ),
                         ),
                       );
                     }),
@@ -304,20 +315,21 @@ class ProductDetailsScreen extends StatelessWidget {
                 Expanded(
                   flex: 3,
                   child: defaultButton(
-                    onPressed:
-                        cartProvider.getCartItems.containsKey(productModel.id)
-                            ? null
-                            : () {
-                                cartProvider.addProductToCart(
-                                  productId: productModel.id,
-                                  title: productModel.title,
-                                  price: productModel.price,
-                                  imageUrl: productModel.imageUrl,
-                                  quantity: productModel.quantity,
-                                );
-                              },
+                    onPressed: cartProvider.getCartItems
+                            .containsKey(productModel.productId)
+                        ? null
+                        : () {
+                            cartProvider.addProductToCart(
+                              productId: productModel.productId!,
+                              title: productModel.title!,
+                              price: productModel.price!,
+                              imageUrl: productModel.imageUrl!,
+                              quantity: productModel.quantity,
+                            );
+                          },
                     color: Colors.purple,
-                    text: cartProvider.getCartItems.containsKey(productModel.id)
+                    text: cartProvider.getCartItems
+                            .containsKey(productModel.productId)
                         ? 'Added To Cart'
                         : 'ADD TO CART',
                     textStyle: const TextStyle(color: Colors.white),
@@ -361,9 +373,9 @@ class ProductDetailsScreen extends StatelessWidget {
                     onTap: () {
                       favouritesProvider.addProductToFavourites(
                         productId: productId,
-                        title: productModel.title,
-                        price: productModel.price,
-                        imageUrl: productModel.imageUrl,
+                        title: productModel.title!,
+                        price: productModel.price!,
+                        imageUrl: productModel.imageUrl!,
                       );
                     },
                     splashColor: ColorsConsts.favColor,
@@ -375,11 +387,11 @@ class ProductDetailsScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       child: Icon(
                         favouritesProvider.getfavouritesItems
-                                .containsKey(productModel.id)
+                                .containsKey(productModel.productId)
                             ? Icons.favorite
                             : FeatherIcons.heart,
                         color: favouritesProvider.getfavouritesItems
-                                .containsKey(productModel.id)
+                                .containsKey(productModel.productId)
                             ? Colors.red
                             : Colors.white,
                       ),

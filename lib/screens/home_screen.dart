@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final productProvider = Provider.of<ProductsProvider>(context);
-   
+    productProvider.getProducts();
     return BackdropScaffold(
       headerHeight: MediaQuery.of(context).size.height * 0.25,
       frontLayerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -203,57 +203,70 @@ class _HomeScreenState extends State<HomeScreen> {
                 scale: 0.9,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
+            if (productProvider.popularProduct.isEmpty)
+              const SizedBox(
+                height: 15,
+              ),
+            if (productProvider.popularProduct.isNotEmpty)
+              Column(
                 children: [
-                  const Text(
-                    'Popular Products',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Popular Products',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const Spacer(),
+                        defaultTextButton(
+                          text: 'View all',
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              FeedsScreen.routeName,
+                              arguments: 'popular',
+                            );
+                          },
+                        )
+                      ],
                     ),
                   ),
-                  const Spacer(),
-                  defaultTextButton(
-                    text: 'View all',
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        FeedsScreen.routeName,
-                        arguments: 'popular',
-                      );
-                    },
-                  )
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, bottom: 10),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      child: ListView.builder(
+                        itemCount: productProvider.popularProduct.length > 7
+                            ? 7
+                            : productProvider.popularProduct.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            child: popularProductItem(
+                              context: context,
+                              productModel:
+                                  productProvider.popularProduct[index],
+                            ),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                ProductDetailsScreen.routeName,
+                                arguments: productProvider
+                                    .popularProduct[index].productId,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, bottom: 10),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.4,
-                child: ListView.builder(
-                  itemCount: 7,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      child: popularProductItem(
-                        context: context,
-                        productModel: productProvider.popularProduct[index],
-                      ),
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          ProductDetailsScreen.routeName,
-                          arguments: productProvider.popularProduct[index].id,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
           ],
         ),
       ),

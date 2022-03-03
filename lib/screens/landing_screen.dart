@@ -1,10 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/screens/auth/login.dart';
 import 'package:ecommerce/screens/auth/sign_up.dart';
+import 'package:ecommerce/widgets/bottom_nav_bar.dart';
+import 'package:ecommerce/widgets/custom_toast.dart';
+import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:ecommerce/widgets/outlined_button.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:provider/provider.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({Key? key}) : super(key: key);
@@ -23,6 +28,7 @@ class _LandingScreenState extends State<LandingScreen>
     'https://e-shopy.org/wp-content/uploads/2020/08/shop.jpeg',
     'https://e-shopy.org/wp-content/uploads/2020/08/shop.jpeg',
   ];
+
   @override
   void initState() {
     images.shuffle();
@@ -55,6 +61,7 @@ class _LandingScreenState extends State<LandingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       body: Stack(
         children: [
@@ -183,8 +190,8 @@ class _LandingScreenState extends State<LandingScreen>
                         height: 30,
                       ),
                       Row(
-                        children: const [
-                          Expanded(
+                        children: [
+                          const Expanded(
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Divider(
@@ -195,9 +202,13 @@ class _LandingScreenState extends State<LandingScreen>
                           ),
                           Text(
                             'Or continue with',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .textSelectionTheme
+                                  .selectionColor,
+                            ),
                           ),
-                          Expanded(
+                          const Expanded(
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10),
                               child: Divider(
@@ -215,14 +226,47 @@ class _LandingScreenState extends State<LandingScreen>
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           defaultOutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              authProvider.signInWithGoogle().then((value) {
+                                Navigator.canPop(context)
+                                    ? Navigator.pop(context)
+                                    : null;
+                              }).catchError((error) {
+                                customFlushBar(
+                                  context: context,
+                                  message: error.toString(),
+                                  title: 'Error',
+                                  backgroundColor: Colors.red,
+                                );
+                              });
+                            },
                             text: 'Google + ',
                             borderColor: Colors.red,
+                            textColor: Theme.of(context)
+                                .textSelectionTheme
+                                .selectionColor!,
                           ),
                           defaultOutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              authProvider
+                                  .signInAnonymously()
+                                  .then((value) {Navigator.canPop(context)
+                                  ? Navigator.pop(context)
+                                  : null;})
+                                  .catchError((error) {
+                                customFlushBar(
+                                  context: context,
+                                  message: error.toString(),
+                                  title: 'Error',
+                                  backgroundColor: Colors.red,
+                                );
+                              });
+                            },
                             text: 'Sign in as a guest',
                             borderColor: Colors.deepPurple,
+                            textColor: Theme.of(context)
+                                .textSelectionTheme
+                                .selectionColor!,
                           ),
                         ],
                       ),

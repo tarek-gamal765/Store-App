@@ -1,12 +1,14 @@
-
+import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/screens/wishlist_screen.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
 import 'package:ecommerce/screens/cart_screen.dart';
+import 'package:ecommerce/widgets/dialog.dart';
 import 'package:ecommerce/widgets/divider_widget.dart';
 import 'package:ecommerce/widgets/navigation_widget.dart';
-import 'package:ecommerce/widgets/text_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +22,7 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   late ScrollController _scrollController;
   double top = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -33,196 +36,212 @@ class _UserScreenState extends State<UserScreen> {
   Widget build(BuildContext context) {
     ThemeProvider themeProvider =
         Provider.of<ThemeProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
-      body: Stack(
-        children: [
-          CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 200,
-                elevation: 0.0,
-                pinned: true,
-                flexibleSpace: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    top = constraints.biggest.height;
-                    return Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.purple,
-                            Colors.deepPurple,
-                          ],
-                          begin: FractionalOffset(0.0, 0.0),
-                          end: FractionalOffset(1.0, 0.0),
-                          stops: [0.0, 1.0],
-                          tileMode: TileMode.clamp,
-                        ),
-                      ),
-                      child: FlexibleSpaceBar(
-                        titlePadding: const EdgeInsets.all(15),
-                        centerTitle: true,
-                        title: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 300),
-                          opacity: top <= 180 ? 1.0 : 0,
-                          child: Row(
-                            children: [
-                              Container(
-                                height: kToolbarHeight / 1.6,
-                                width: kToolbarHeight / 1.6,
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                decoration: const BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.white,
-                                      blurRadius: 1.0,
+      body: FutureBuilder(
+          future: authProvider.getUserData(),
+          builder: (context, sanpshot) {
+            return authProvider.userModel != null
+                ? Stack(
+                    children: [
+                      CustomScrollView(
+                        controller: _scrollController,
+                        slivers: [
+                          SliverAppBar(
+                            expandedHeight:
+                                MediaQuery.of(context).size.height * 0.27 +
+                                    MediaQuery.of(context).padding.top,
+                            elevation: 0.0,
+                            pinned: true,
+                            flexibleSpace: LayoutBuilder(
+                              builder: (BuildContext context,
+                                  BoxConstraints constraints) {
+                                top = constraints.biggest.height;
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.purple,
+                                        Colors.deepPurple,
+                                      ],
+                                      begin: FractionalOffset(0.0, 0.0),
+                                      end: FractionalOffset(1.0, 0.0),
+                                      stops: [0.0, 1.0],
+                                      tileMode: TileMode.clamp,
                                     ),
-                                  ],
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: NetworkImage(
-                                        'https://t3.ftcdn.net/jpg/01/83/55/76/240_F_183557656_DRcvOesmfDl5BIyhPKrcWANFKy2964i9.jpg'),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              const Text(
-                                'Name',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
+                                  child: FlexibleSpaceBar(
+                                    titlePadding: const EdgeInsets.all(15),
+                                    centerTitle: true,
+                                    title: AnimatedOpacity(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      opacity: top <= 180 ? 1.0 : 0,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            height: kToolbarHeight / 1.8,
+                                            width: kToolbarHeight / 1.8,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            decoration: BoxDecoration(
+                                              boxShadow: const [
+                                                BoxShadow(
+                                                  color: Colors.white,
+                                                  blurRadius: 1.0,
+                                                ),
+                                              ],
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                  authProvider
+                                                      .userModel!.imageUrl!,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(
+                                            authProvider.userModel!.name!,
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                              //overflow: TextOverflow.ellipsis,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    background: Image.network(
+                                      authProvider.userModel!.imageUrl!,
+                                      fit: BoxFit.cover,
+                                      filterQuality: FilterQuality.high,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        background: Image.network(
-                          'https://img.freepik.com/free-photo/portrait-beautiful-young-woman-standing-grey-wall_231208-10760.jpg?w=740',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    title(title: 'User Bag'),
-                    dividerWidget(),
-                    userListTile(
-                      context: context,
-                      icon: FeatherIcons.heart,
-                      title: 'Wishlist',
-                      subTitle: 'Sub Wishlist',
-                      trailingIcon: FeatherIcons.chevronRight,
-                      onTap: () {
-                        navigateTo(
-                          context: context,
-                          widget: const WishlistScreen(),
-                        );
-                      },
-                    ),
-                    userListTile(
-                      context: context,
-                      icon: FeatherIcons.shoppingCart,
-                      title: 'Cart',
-                      subTitle: 'Sub Cart',
-                      trailingIcon: FeatherIcons.chevronRight,
-                      onTap: () {
-                        navigateTo(
-                          context: context,
-                          widget: const CartScreen(),
-                        );
-                      },
-                    ),
-                    userListTile(
-                      context: context,
-                      icon: FeatherIcons.shoppingBag,
-                      title: 'My Orders',
-                      subTitle: 'Sub Orders',
-                      trailingIcon: FeatherIcons.chevronRight,
-                      onTap: () {},
-                    ),
-                    title(title: 'User Information'),
-                    dividerWidget(),
-                    userListTile(
-                      context: context,
-                      icon: FeatherIcons.mail,
-                      title: 'Email',
-                      subTitle: 'Sub Email',
-                    ),
-                    userListTile(
-                      context: context,
-                      icon: FeatherIcons.phone,
-                      title: 'Phone',
-                      subTitle: 'Sub Phone',
-                    ),
-                    userListTile(
-                      context: context,
-                      icon: Icons.local_shipping_outlined,
-                      title: 'Shopping',
-                      subTitle: 'Sub Shopping',
-                    ),
-                    userListTile(
-                      context: context,
-                      icon: FeatherIcons.clock,
-                      title: 'Joined Date',
-                      subTitle: 'Sub Joined Date',
-                    ),
-                    title(title: 'Settings'),
-                    dividerWidget(),
-                    ListTileSwitch(
-                      value: themeProvider.getTheme,
-                      leading: const Icon(FeatherIcons.sun),
-                      onChanged: (value) {
-                        setState(() {
-                          themeProvider.darkTheme = value;
-                        });
-                      },
-                      switchType: SwitchType.cupertino,
-                      title: const Text('Dark Theme'),
-                      switchActiveColor: Theme.of(context).primaryColor,
-                    ),
-                    userListTile(
-                      context: context,
-                      icon: FeatherIcons.logOut,
-                      title: 'Logout',
-                      subTitle: 'Sub Logout',
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) {
-                            return AlertDialog(
-                              title: const Text('Sign Out'),
-                              content: const Text('Do you want to sign out ?'),
-                              actions: [
-                                defaultTextButton(
-                                  text: 'Cancel',
-                                  onPressed: () {},
+                          SliverToBoxAdapter(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                title(title: 'User Bag'),
+                                dividerWidget(),
+                                userListTile(
+                                  context: context,
+                                  icon: FeatherIcons.heart,
+                                  title: 'Wishlist',
+                                  subTitle: 'Sub Wishlist',
+                                  trailingIcon: FeatherIcons.chevronRight,
+                                  onTap: () {
+                                    navigateTo(
+                                      context: context,
+                                      widget: const WishlistScreen(),
+                                    );
+                                  },
                                 ),
-                                defaultTextButton(
-                                  text: 'Ok',
-                                  onPressed: () {},
+                                userListTile(
+                                  context: context,
+                                  icon: FeatherIcons.shoppingCart,
+                                  title: 'Cart',
+                                  subTitle: 'Sub Cart',
+                                  trailingIcon: FeatherIcons.chevronRight,
+                                  onTap: () {
+                                    navigateTo(
+                                      context: context,
+                                      widget: const CartScreen(),
+                                    );
+                                  },
+                                ),
+                                userListTile(
+                                  context: context,
+                                  icon: FeatherIcons.shoppingBag,
+                                  title: 'My Orders',
+                                  subTitle: 'Sub Orders',
+                                  trailingIcon: FeatherIcons.chevronRight,
+                                  onTap: () {},
+                                ),
+                                title(title: 'User Information'),
+                                dividerWidget(),
+                                userListTile(
+                                  context: context,
+                                  icon: FeatherIcons.mail,
+                                  title: 'Email',
+                                  subTitle: authProvider.userModel != null
+                                      ? authProvider.userModel!.email!
+                                      : '',
+                                ),
+                                userListTile(
+                                  context: context,
+                                  icon: FeatherIcons.phone,
+                                  title: 'Phone',
+                                  subTitle: authProvider.userModel != null
+                                      ? authProvider.userModel!.phone ??
+                                          'Not Exist'
+                                      : '',
+                                ),
+                                userListTile(
+                                  context: context,
+                                  icon: Icons.local_shipping_outlined,
+                                  title: 'Shopping',
+                                  subTitle: 'Sub Shopping',
+                                ),
+                                userListTile(
+                                  context: context,
+                                  icon: FeatherIcons.clock,
+                                  title: 'Joined Date',
+                                  subTitle: authProvider.userModel != null
+                                      ? authProvider.userModel!.joinedAt!
+                                      : '',
+                                ),
+                                title(title: 'Settings'),
+                                dividerWidget(),
+                                ListTileSwitch(
+                                  value: themeProvider.getTheme,
+                                  leading: const Icon(FeatherIcons.sun),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      themeProvider.darkTheme = value;
+                                    });
+                                  },
+                                  switchType: SwitchType.cupertino,
+                                  title: const Text('Dark Theme'),
+                                  switchActiveColor:
+                                      Theme.of(context).primaryColor,
+                                ),
+                                userListTile(
+                                  context: context,
+                                  icon: FeatherIcons.logOut,
+                                  title: 'Logout',
+                                  subTitle: '',
+                                  onTap: () {
+                                    defaultDialog(
+                                      context: context,
+                                      title: 'Logout',
+                                      subTitle: 'Do you want to logout?',
+                                      ok: () {
+                                        FirebaseAuth.instance.signOut().then(
+                                              (value) => Navigator.pop(context),
+                                            );
+                                      },
+                                      iconData: Icons.logout,
+                                    );
+                                  },
                                 ),
                               ],
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          buildFab(),
-        ],
-      ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      buildFab(),
+                    ],
+                  )
+                : const Center(child: CircularProgressIndicator());
+          }),
     );
   }
 
@@ -258,8 +277,9 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget buildFab() {
-    double defaultTopMargin = MediaQuery.of(context).size.height * 0.3;
-    double scaleStart = MediaQuery.of(context).size.height * 0.24;
+    double defaultTopMargin = MediaQuery.of(context).size.height * 0.26 +
+        MediaQuery.of(context).padding.top;
+    double scaleStart = MediaQuery.of(context).size.height * 0.22;
     double scaleEnd = scaleStart / 2;
     double top = defaultTopMargin;
     double scale = 1.0;
@@ -287,7 +307,11 @@ class _UserScreenState extends State<UserScreen> {
             FeatherIcons.camera,
             color: Colors.white,
           ),
-          onPressed: () {},
+          onPressed: () {
+            // Provider.of<AuthProvider>(context, listen: false).getUserImage(
+            //   source: ImageSource.gallery,
+            // );
+          },
         ),
       ),
     );

@@ -22,7 +22,7 @@ Widget brandsNavigationRail(
               color: Theme.of(context).backgroundColor,
               image: DecorationImage(
                 image: NetworkImage(
-                  productModel.imageUrl,
+                  productModel.imageUrl!,
                 ),
               ),
               borderRadius: const BorderRadius.only(
@@ -59,7 +59,7 @@ Widget brandsNavigationRail(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  productModel.title,
+                  productModel.title!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -70,17 +70,19 @@ Widget brandsNavigationRail(
                 const SizedBox(
                   height: 20.0,
                 ),
-                Text('US ${productModel.price} \$',
-                    maxLines: 1,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 26.0,
-                    )),
+                Text(
+                  '${productModel.price} \$',
+                  maxLines: 1,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 22.0,
+                  ),
+                ),
                 const SizedBox(
                   height: 20.0,
                 ),
                 Text(
-                  productModel.productCategoryName,
+                  productModel.productCategoryName!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(

@@ -1,25 +1,59 @@
 class ProductModel {
-  final String id;
-  final String title;
-  final String description;
-  final double price;
-  final String imageUrl;
-  final String productCategoryName;
-  final String brand;
-  final int quantity;
-  final bool isFavorite;
-  final bool isPopular;
+  String? productId;
+  String? userId;
+  String? title;
+  String? description;
+  double? price;
+  String? imageUrl;
+  String? productCategoryName;
+  String? brand;
+  int? quantity;
+  bool? isFavorite;
+  bool? isPopular;
+  String? createdAt;
 
   ProductModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.price,
-    required this.imageUrl,
-    required this.productCategoryName,
-    required this.brand,
-    required this.quantity,
-    required this.isFavorite,
-    required this.isPopular,
+    this.productId,
+    this.userId,
+    this.title,
+    this.description,
+    this.price,
+    this.imageUrl,
+    this.productCategoryName,
+    this.brand,
+    this.quantity,
+    this.isFavorite,
+    this.isPopular,
+    this.createdAt,
   });
+  ProductModel.fromJson(Map<String, dynamic> json) {
+    productId = json['productId'];
+    userId = json['userId'];
+    title = json['title'];
+    description = json['description'];
+    price = json['price'];
+    imageUrl = json['imageUrl'];
+    productCategoryName = json['productCategoryName'];
+    brand = json['brand'];
+    createdAt = json['createdAt'];
+    quantity = json['quantity'];
+    isFavorite = json['isFavorite'];
+    isPopular = json['isPopular'];
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'productId': productId,
+      'userId': userId,
+      'title': title,
+      'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'productCategoryName': productCategoryName,
+      'brand': brand,
+      'createdAt': createdAt,
+      'quantity': quantity,
+      'isFavorite': isFavorite,
+      'isPopular': isPopular,
+    };
+  }
 }

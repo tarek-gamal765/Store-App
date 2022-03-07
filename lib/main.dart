@@ -1,6 +1,5 @@
 import 'package:ecommerce/consts/theme_data.dart';
 import 'package:ecommerce/provider/auth_provider.dart';
-import 'package:ecommerce/screens/main_screen.dart';
 import 'package:ecommerce/network/local/shared_prefrence.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/favourites_provider.dart';

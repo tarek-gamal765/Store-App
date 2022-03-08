@@ -1,7 +1,7 @@
 import 'package:ecommerce/consts/colors.dart';
-import 'package:ecommerce/screens/cart_screen.dart';
+import 'package:ecommerce/screens/cart/cart.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';
-import 'package:ecommerce/screens/wishlist_screen.dart';
+import 'package:ecommerce/screens/wishlist/wishlist.dart';
 import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:ecommerce/screens/upload_product_form.dart';
 import 'package:flutter/material.dart';

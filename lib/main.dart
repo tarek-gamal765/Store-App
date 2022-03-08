@@ -3,6 +3,7 @@ import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/network/local/shared_prefrence.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/favourites_provider.dart';
+import 'package:ecommerce/provider/orders_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
 import 'package:ecommerce/screens/auth/login.dart';
@@ -61,6 +62,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider()..getUserData(),
+        ),
+        ChangeNotifierProvider<OrdersProvider>(
+          create: (context) => OrdersProvider(),
         ),
       ],
       child: Consumer<ThemeProvider>(

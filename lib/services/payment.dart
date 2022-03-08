@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:another_flushbar/flushbar.dart';
-import 'package:ecommerce/widgets/custom_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
@@ -42,7 +40,6 @@ class StripePaymentServices {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      print(jsonDecode(response.body));
       throw 'Failed to register as a customer.';
     }
   }
@@ -69,29 +66,20 @@ class StripePaymentServices {
 
   static Future createCreditCard(
       String customerId, String paymentIntentClientSecret, context) async {
-    try {
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          applePay: true,
-          googlePay: true,
-          style: ThemeMode.dark,
-          primaryButtonColor: Colors.deepPurpleAccent,
-          testEnv: true,
-          merchantCountryCode: 'US',
-          merchantDisplayName: 'Flutter Stripe Store Demo',
-          customerId: customerId,
-          paymentIntentClientSecret: paymentIntentClientSecret,
-        ),
-      );
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        applePay: true,
+        googlePay: true,
+        style: ThemeMode.dark,
+        primaryButtonColor: Colors.deepPurpleAccent,
+        testEnv: true,
+        merchantCountryCode: 'US',
+        merchantDisplayName: 'Flutter Stripe Store Demo',
+        customerId: customerId,
+        paymentIntentClientSecret: paymentIntentClientSecret,
+      ),
+    );
 
-      await Stripe.instance.presentPaymentSheet();
-    } on StripeException catch (error) {
-      customFlushBar(
-        context: context,
-        message: error.error.message!,
-        title: 'Failed',
-        backgroundColor: Colors.red,
-      );
-    } catch (error) {}
+    await Stripe.instance.presentPaymentSheet();
   }
 }

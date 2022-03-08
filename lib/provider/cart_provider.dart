@@ -13,7 +13,6 @@ class CartProvider with ChangeNotifier {
     cartItems.forEach((key, value) {
       total += value.price * value.quantity;
     });
-    // notifyListeners();
     return total;
   }
 
@@ -29,6 +28,7 @@ class CartProvider with ChangeNotifier {
         productId,
         (existingItem) => CartModel(
           id: existingItem.id,
+          productId: existingItem.productId,
           title: existingItem.title,
           imageUrl: existingItem.imageUrl,
           price: existingItem.price,
@@ -39,7 +39,8 @@ class CartProvider with ChangeNotifier {
       cartItems.putIfAbsent(
         productId,
         () => CartModel(
-          id: productId,
+          id: DateTime.now().toString(),
+          productId: productId,
           title: title,
           imageUrl: imageUrl,
           price: price,
@@ -56,6 +57,7 @@ class CartProvider with ChangeNotifier {
         productId,
         (existingItem) => CartModel(
           id: existingItem.id,
+          productId: existingItem.productId,
           title: existingItem.title,
           imageUrl: existingItem.imageUrl,
           price: existingItem.price,

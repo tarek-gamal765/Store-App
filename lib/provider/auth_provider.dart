@@ -17,11 +17,8 @@ class AuthProvider extends ChangeNotifier {
     final pickedImage = await ImagePicker().pickImage(source: source);
     if (pickedImage != null) {
       userImage = File(pickedImage.path);
-      notifyListeners();
-    } else {
-      print('No image selected');
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   void uploadUserData({

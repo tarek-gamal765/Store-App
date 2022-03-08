@@ -1,5 +1,5 @@
 import 'package:ecommerce/screens/search_screen.dart';
-import 'package:ecommerce/screens/cart_screen.dart';
+import 'package:ecommerce/screens/cart/cart.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';
 import 'package:ecommerce/screens/home_screen.dart';
 import 'package:ecommerce/screens/user_screen.dart';

@@ -2,7 +2,6 @@ import 'package:backdrop/backdrop.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ecommerce/consts/colors.dart';
-import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/products_provider.dart';
 import 'package:ecommerce/screens/brands_screen.dart';
 import 'package:ecommerce/screens/feeds_screen.dart';

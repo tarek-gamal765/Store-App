@@ -2,9 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/screens/auth/login.dart';
 import 'package:ecommerce/screens/auth/sign_up.dart';
-import 'package:ecommerce/widgets/bottom_nav_bar.dart';
 import 'package:ecommerce/widgets/custom_toast.dart';
-import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:ecommerce/widgets/outlined_button.dart';
 
 import 'package:flutter/material.dart';

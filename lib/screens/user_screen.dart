@@ -1,14 +1,14 @@
 import 'package:ecommerce/provider/auth_provider.dart';
-import 'package:ecommerce/screens/wishlist_screen.dart';
+import 'package:ecommerce/screens/order/order.dart';
+import 'package:ecommerce/screens/wishlist/wishlist.dart';
 import 'package:ecommerce/provider/theme_provider.dart';
-import 'package:ecommerce/screens/cart_screen.dart';
+import 'package:ecommerce/screens/cart/cart.dart';
 import 'package:ecommerce/widgets/dialog.dart';
 import 'package:ecommerce/widgets/divider_widget.dart';
 import 'package:ecommerce/widgets/navigation_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:list_tile_switch/list_tile_switch.dart';
 import 'package:provider/provider.dart';
 
@@ -163,7 +163,12 @@ class _UserScreenState extends State<UserScreen> {
                                   title: 'My Orders',
                                   subTitle: 'Sub Orders',
                                   trailingIcon: FeatherIcons.chevronRight,
-                                  onTap: () {},
+                                  onTap: () {
+                                    navigateTo(
+                                      context: context,
+                                      widget: const OrderScreen(),
+                                    );
+                                  },
                                 ),
                                 title(title: 'User Information'),
                                 dividerWidget(),

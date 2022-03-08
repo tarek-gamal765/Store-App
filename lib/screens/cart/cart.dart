@@ -1,19 +1,16 @@
-import 'package:ecommerce/consts/colors.dart';
-import 'package:ecommerce/models/cart_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
-import 'package:ecommerce/provider/theme_provider.dart';
 import 'package:ecommerce/screens/cart/cart_empty.dart';
 import 'package:ecommerce/screens/cart/cart_full.dart';
-import 'package:ecommerce/screens/feeds_screen.dart';
-import 'package:ecommerce/screens/product_details_screen.dart';
+
 import 'package:ecommerce/services/payment.dart';
-import 'package:ecommerce/widgets/custom_toast.dart';
 import 'package:ecommerce/widgets/deafult_button.dart';
 import 'package:ecommerce/widgets/dialog.dart';
-import 'package:ecommerce/widgets/navigation_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -41,9 +38,30 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  void createOrder() {
+    final CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    cartProvider.getCartItems.forEach((key, orderValue) async {
+      String orderId = const Uuid().v4();
+      await FirebaseFirestore.instance.collection('orders').doc(orderId).set(
+        {
+          'orderId': orderId,
+          'userId': userId,
+          'productId': orderValue.productId,
+          'title': orderValue.title,
+          'price': orderValue.price * orderValue.quantity,
+          'imageUrl': orderValue.imageUrl,
+          'quantity': orderValue.quantity,
+          'orderDate': Timestamp.now(),
+        },
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context);
+    final CartProvider cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: cartProvider.getCartItems.isNotEmpty
           ? AppBar(
@@ -103,12 +121,13 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-
   Widget buildBottomSheet({
     required BuildContext context,
     required double subTotal,
   }) {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
@@ -123,10 +142,12 @@ class _CartScreenState extends State<CartScreen> {
         children: [
           Expanded(
             child: defaultButton(
-              onPressed: () {
+              onPressed: () async {
                 double amountInCents = subTotal * 1000;
                 int integerAmount = (amountInCents / 10).ceil();
-                payment(amount: integerAmount);
+                await payment(amount: integerAmount).then(
+                  (value) => createOrder(),
+                );
               },
               borderRadius: 20,
               height: MediaQuery.of(context).size.height * 0.05,

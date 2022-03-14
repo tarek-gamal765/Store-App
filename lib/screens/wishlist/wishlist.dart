@@ -17,7 +17,7 @@ class WishlistScreen extends StatelessWidget {
           ? AppBar(
               backgroundColor: Theme.of(context).backgroundColor,
               title: Text(
-                'Wishlist Items (${favouritesProvider.getfavouritesItems.length})',
+                'Wishlist (${favouritesProvider.getfavouritesItems.length})',
                 style: TextStyle(
                   color: Theme.of(context).textSelectionTheme.selectionColor,
                 ),

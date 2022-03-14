@@ -1,3 +1,4 @@
+import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class _BrandsScreenState extends State<BrandsScreen> {
   String? routeArgs;
   String? brand;
   int selectedIndex = 0;
+
   @override
   void didChangeDependencies() {
     routeArgs = ModalRoute.of(context)!.settings.arguments.toString();
@@ -47,8 +49,10 @@ class _BrandsScreenState extends State<BrandsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<ProductsProvider>(context, listen: false);
+    final productsProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
     final brandProducts = productsProvider.findByBrand(brandName: brand!);
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       body: Row(
         children: <Widget>[
@@ -70,18 +74,19 @@ class _BrandsScreenState extends State<BrandsScreen> {
                       },
                       labelType: NavigationRailLabelType.all,
                       leading: Column(
-                        children: const <Widget>[
-                          SizedBox(
+                        children: <Widget>[
+                          const SizedBox(
                             height: 20,
                           ),
                           Center(
                             child: CircleAvatar(
-                              radius: 16,
+                              radius: 18,
                               backgroundImage: NetworkImage(
-                                  "https://cdn1.vectorstock.com/i/thumb-large/62/60/default-avatar-photo-placeholder-profile-image-vector-21666260.jpg"),
+                                authProvider.userModel!.imageUrl!,
+                              ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 80,
                           ),
                         ],
@@ -122,24 +127,37 @@ class _BrandsScreenState extends State<BrandsScreen> {
                   top: MediaQuery.of(context).size.height * 0.1,
                   left: 10,
                 ),
-                child: ListView.builder(
-                  itemCount: brandProducts.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                       Navigator.pushNamed(
-                          context,
-                          ProductDetailsScreen.routeName,
-                          arguments: brandProducts[index].productId,
-                        );
-                      },
-                      child: brandsNavigationRail(
-                        context: context,
-                        productModel: brandProducts[index],
+                child: brandProducts.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No products related to this brand.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 26,
+                            color: Theme.of(context)
+                                .textSelectionTheme
+                                .selectionColor,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: brandProducts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                ProductDetailsScreen.routeName,
+                                arguments: brandProducts[index].productId,
+                              );
+                            },
+                            child: brandsNavigationRail(
+                              context: context,
+                              productModel: brandProducts[index],
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ),
           ),

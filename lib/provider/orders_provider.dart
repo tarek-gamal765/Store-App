@@ -38,4 +38,13 @@ class OrdersProvider with ChangeNotifier {
     } catch (error) {}
     notifyListeners();
   }
+
+  Future<void> removeOrder({required String orderId}) async {}
+
+  Future<void> clearOrders({required String orderId}) async {
+    FirebaseFirestore.instance
+        .collection('orders')
+        .firestore
+        .clearPersistence();
+  }
 }

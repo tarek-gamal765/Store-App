@@ -66,20 +66,22 @@ class StripePaymentServices {
 
   static Future createCreditCard(
       String customerId, String paymentIntentClientSecret, context) async {
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        applePay: true,
-        googlePay: true,
-        style: ThemeMode.dark,
-        primaryButtonColor: Colors.deepPurpleAccent,
-        testEnv: true,
-        merchantCountryCode: 'US',
-        merchantDisplayName: 'Flutter Stripe Store Demo',
-        customerId: customerId,
-        paymentIntentClientSecret: paymentIntentClientSecret,
-      ),
-    );
+    try {
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          applePay: true,
+          googlePay: true,
+          style: ThemeMode.dark,
+          primaryButtonColor: Colors.deepPurpleAccent,
+          testEnv: true,
+          merchantCountryCode: 'US',
+          merchantDisplayName: 'Stripe Store App',
+          customerId: customerId,
+          paymentIntentClientSecret: paymentIntentClientSecret,
+        ),
+      );
 
-    await Stripe.instance.presentPaymentSheet();
+      await Stripe.instance.presentPaymentSheet();
+    } catch (error) {}
   }
 }

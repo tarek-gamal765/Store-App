@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
           create: (context) => themeProvider,
         ),
         ChangeNotifierProvider<ProductsProvider>(
-          create: (context) => ProductsProvider(),
+          create: (context) => ProductsProvider()..getProducts(),
         ),
         ChangeNotifierProvider<CartProvider>(
           create: (context) => CartProvider(),
@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
           create: (context) => FavouritesProvider(),
         ),
         ChangeNotifierProvider<AuthProvider>(
-          create: (context) => AuthProvider()..getUserData(),
+          create: (context) => AuthProvider(),
         ),
         ChangeNotifierProvider<OrdersProvider>(
           create: (context) => OrdersProvider(),

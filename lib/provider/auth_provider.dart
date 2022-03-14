@@ -64,14 +64,16 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> getUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
+
     if (user != null && !user.isAnonymous) {
       final uId = user.uid;
-      await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection('users')
           .doc(uId)
           .get()
           .then((value) {
         userModel = UserModel.fromJson(value.data()!);
+        print(userModel!.name);
       });
     }
   }
@@ -156,5 +158,31 @@ class AuthProvider extends ChangeNotifier {
     await FirebaseAuth.instance.sendPasswordResetEmail(
       email: email,
     );
+  }
+
+  Future<void> updateUser({
+    required String name,
+    required String phone,
+    required String email,
+    required String password,
+  }) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (name != userModel!.name) {
+      FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+        'name': name,
+      });
+    } else if (!phone.contains(userModel!.phone!)) {
+      FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+        'phone': phone,
+      });
+    } else if (!password.contains(userModel!.password!)) {
+      FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+        'password': password,
+      });
+    } else if (!email.contains(userModel!.email!)) {
+      FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+        'email': email,
+      });
+    }
   }
 }

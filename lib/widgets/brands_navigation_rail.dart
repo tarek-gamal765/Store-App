@@ -31,9 +31,10 @@ Widget brandsNavigationRail(
               ),
               boxShadow: const [
                 BoxShadow(
-                    color: Colors.grey,
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 2.0)
+                  color: Colors.grey,
+                  offset: Offset(2.0, 2.0),
+                  blurRadius: 2.0,
+                ),
               ],
             ),
           ),

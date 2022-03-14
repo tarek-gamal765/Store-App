@@ -13,33 +13,57 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class FeedsScreen extends StatelessWidget {
+class FeedsScreen extends StatefulWidget {
   const FeedsScreen({Key? key}) : super(key: key);
   static const routeName = '/FeedsScreen';
 
   @override
+  State<FeedsScreen> createState() => _FeedsScreenState();
+}
+
+class _FeedsScreenState extends State<FeedsScreen> {
+  Future<void> getProducts() async{
+    final ProductsProvider productsProvider = Provider.of<
+        ProductsProvider>(context,listen: false);
+    productsProvider.getProducts();
+  }
+  @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)!.settings.arguments;
-    final cartProvider = Provider.of<CartProvider>(context);
-    final favouritesProvider = Provider.of<FavouritesProvider>(context);
+    final arguments = ModalRoute
+        .of(context)!
+        .settings
+        .arguments;
+    final CartProvider cartProvider = Provider.of<CartProvider>(context);
+    final FavouritesProvider favouritesProvider = Provider.of<
+        FavouritesProvider>(context);
+
     List<ProductModel> products = [];
     if (arguments == 'popular') {
-      products = Provider.of<ProductsProvider>(context).popularProduct;
+      products = Provider
+          .of<ProductsProvider>(context)
+          .popularProduct;
     } else {
-      products = Provider.of<ProductsProvider>(context).products;
+      products = Provider
+          .of<ProductsProvider>(context)
+          .productsList;
     }
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        backgroundColor: Theme.of(context).cardColor,
-        // title: Text(
-        //   'Details',
-        //   style: TextStyle(
-        //     fontSize: 20,
-        //     color: Theme.of(context).textSelectionTheme.selectionColor,
-        //   ),
-        // ),
-        // centerTitle: true,
+        backgroundColor: Theme
+            .of(context)
+            .cardColor,
+        title: Text(
+          'Feeds',
+          style: TextStyle(
+            fontSize: 20,
+            color: Theme
+                .of(context)
+                .textSelectionTheme
+                .selectionColor,
+          ),
+        ),
+
         actions: [
           Badge(
             animationType: BadgeAnimationType.slide,
@@ -89,27 +113,30 @@ class FeedsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: MasonryGridView.count(
-        crossAxisCount: 2,
-        itemCount: products.length,
-        padding: const EdgeInsets.all(8),
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                ProductDetailsScreen.routeName,
-                arguments: products[index].productId,
-              );
-            },
-            child: feedsItem(
-              context: context,
-              productModel: products[index],
-            ),
-          );
-        },
+      body: RefreshIndicator(
+        onRefresh: getProducts,
+        child: MasonryGridView.count(
+          crossAxisCount: 2,
+          itemCount: products.length,
+          padding: const EdgeInsets.all(8),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  ProductDetailsScreen.routeName,
+                  arguments: products[index].productId,
+                );
+              },
+              child: feedsItem(
+                context: context,
+                productModel: products[index],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

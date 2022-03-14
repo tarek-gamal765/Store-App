@@ -143,7 +143,7 @@ class _CartFullState extends State<CartFull> {
                             ? () {}
                             : () {
                                 cartProvider.reduceQuantityByOne(
-                                  productId: cartModel.id,
+                                  productId: widget.productId,
                                 );
                               },
                       ),
@@ -181,7 +181,7 @@ class _CartFullState extends State<CartFull> {
                         splashRadius: 0.5,
                         onPressed: () {
                           cartProvider.addProductToCart(
-                            productId: cartModel.id,
+                            productId: widget.productId,
                             imageUrl: cartModel.imageUrl,
                             price: cartModel.price,
                             title: cartModel.title,

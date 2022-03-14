@@ -17,9 +17,8 @@ class OrderFull extends StatefulWidget {
 class _OrderFullState extends State<OrderFull> {
   @override
   Widget build(BuildContext context) {
-
     final OrdersModel ordersModel = Provider.of<OrdersModel>(context);
-
+    final OrdersProvider ordersProvider = Provider.of<OrdersProvider>(context);
     return InkWell(
       onTap: () => Navigator.pushNamed(
         context,
@@ -80,7 +79,7 @@ class _OrderFullState extends State<OrderFull> {
                                     .doc(ordersModel.orderId)
                                     .delete()
                                     .then(
-                                      (value) => Navigator.pop(context),
+                                      (value) => Navigator.of(context).pop(),
                                     );
                               },
                             );

@@ -155,7 +155,7 @@ class _UploadProductFormState extends State<UploadProductForm> {
                             },
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                RegExp(r'[0-9]'),
+                                RegExp(r'[0-9-.]'),
                               ),
                             ],
                             keyboardType: TextInputType.number,

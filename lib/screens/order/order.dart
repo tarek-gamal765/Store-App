@@ -60,7 +60,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
                 body: Container(
                   margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.width * 0.17,
+                    bottom: MediaQuery.of(context).size.width * 0.02,
                   ),
                   child: ListView.builder(
                     itemBuilder: (context, index) {

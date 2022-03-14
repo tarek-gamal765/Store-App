@@ -216,8 +216,8 @@ class ProductDetailsScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.4,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: productProvider.products.length < 7
-                        ? productProvider.products.length
+                    itemCount: productProvider.productsList.length < 7
+                        ? productProvider.productsList.length
                         : 7,
                     itemBuilder: ((context, index) {
                       return InkWell(
@@ -226,14 +226,14 @@ class ProductDetailsScreen extends StatelessWidget {
                             context,
                             ProductDetailsScreen.routeName,
                             arguments:
-                                productProvider.products[index].productId,
+                                productProvider.productsList[index].productId,
                           );
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10),
                           child: feedsItem(
                             context: context,
-                            productModel: productProvider.products[index],
+                            productModel: productProvider.productsList[index],
                           ),
                         ),
                       );

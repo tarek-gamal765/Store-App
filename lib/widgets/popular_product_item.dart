@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:ecommerce/consts/colors.dart';
 import 'package:ecommerce/models/product_model.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/favourites_provider.dart';
@@ -49,11 +50,13 @@ Widget popularProductItem({
                 },
                 icon: favouritesProvider.getfavouritesItems
                         .containsKey(productModel.productId)
-                    ? const Icon(
-                        Icons.star,
+                    ?  Icon(
+                        Icons.favorite,
+                  color: ColorsConsts.gradiendLStart,
+                  size: 28,
                       )
                     : const Icon(
-                        FeatherIcons.star,
+                  Icons.favorite_border,
                       ),
               ),
             ),
@@ -123,10 +126,10 @@ Widget popularProductItem({
                 icon: cartProvider.getCartItems
                         .containsKey(productModel.productId)
                     ? const Icon(
-                        FeatherIcons.check,
+                       Icons.done_all,
                       )
                     : const Icon(
-                        Icons.add_shopping_cart_outlined,
+                        Icons.add_shopping_cart,
                       ),
               ),
             ],
